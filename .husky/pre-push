@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+REMOTE_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null | cut -d'/' -f2)
+TARGET_BRANCH="${REMOTE_BRANCH:-$BRANCH}"
+
+# Block direct push to main/develop
+if [ "$TARGET_BRANCH" = "main" ] || [ "$TARGET_BRANCH" = "develop" ]; then
+  echo "Direct push to main/develop is not allowed. Please open a PR."
+  exit 1
+fi
+
+# Enforce branch naming convention
+BRANCH_PATTERN="^(main|develop|release\/.*|feature\/.*|bugfix\/.*|hotfix\/.*|chore\/.*)$"
+if ! echo "$BRANCH" | grep -qE "$BRANCH_PATTERN"; then
+  echo "Branch name '$BRANCH' does not follow naming convention."
+  echo "Allowed: main, develop, release/*, feature/*, bugfix/*, hotfix/*, chore/*"
+  exit 1
+fi

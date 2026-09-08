@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+STAGED_FILES=$(git diff --cached --name-only)
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "⚠️  No files staged. Skipping checks."
+  exit 0
+fi
+
+echo "📂 Staged files:"
+echo "$STAGED_FILES"
+echo "-----------------------------------"
+
+echo "🧹 Running lint-staged..."
+npx lint-staged
+if [ $? -ne 0 ]; then
+  echo "❌ lint-staged failed. Fix errors before committing."
+  exit 1
+fi
+
+echo "✅ lint-staged passed"
+echo "-----------------------------------"
+
+echo "🧠 Running TypeScript type check..."
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript errors detected."
+  exit 1
+fi
+
+echo "✅ TypeScript check passed"
+echo "-----------------------------------"
+
+echo "🚫 Checking for console.log / debugger..."
+SRC_STAGED_FILES=$(echo "$STAGED_FILES" | grep -E '^src/.*\.(ts|tsx|js|jsx)$')
+if [ -n "$SRC_STAGED_FILES" ] && grep -n "console\.log(\|^\s*debugger" $SRC_STAGED_FILES; then
+  echo "❌ Remove console.log/debugger before committing."
+  exit 1
+fi
+
+echo "✅ No debug statements found"
+echo "-----------------------------------"
+
+echo "🎉 All pre-commit checks passed!"
+exit 0
