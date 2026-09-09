@@ -27,7 +27,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Laminate Door Visualizer',
+  title: 'Zellenth',
   description: 'Visualize any laminate on any door, in real time.',
 };
 
