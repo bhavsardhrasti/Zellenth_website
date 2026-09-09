@@ -48,4 +48,16 @@
   --shadow-elevated:
     0px 7px 8px 0px rgba(95, 74, 46, 0.1), 0px 28px 33px 0px rgba(95, 74, 46, 0.09),
     0px 63px 75px 0px rgba(95, 74, 46, 0.05), 0px 111px 132px 0px rgba(95, 74, 46, 0.02);
+
+  /* Motion */
+  --animate-grain-shift: grain-shift 12s linear infinite;
+}
+
+@keyframes grain-shift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -120px;
+  }
 }
