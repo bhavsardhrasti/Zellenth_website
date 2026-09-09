@@ -36,6 +36,11 @@ export const doorQuerySchema = paginationQuerySchema.extend({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
+export const doorExclusionsSchema = z.object({
+  excludedLaminateIds: z.array(objectIdSchema).default([]),
+});
+
 export type DoorInput = z.infer<typeof doorSchema>;
 export type UpdateDoorInput = z.infer<typeof updateDoorSchema>;
 export type DoorQuery = z.infer<typeof doorQuerySchema>;
+export type DoorExclusionsInput = z.infer<typeof doorExclusionsSchema>;

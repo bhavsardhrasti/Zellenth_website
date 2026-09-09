@@ -3,7 +3,9 @@ import { Door } from '@/lib/db/models/Door.model';
 import { NotFoundError, ConflictError } from '@/lib/errors';
 import { buildPaginatedMeta } from '@/lib/api/response';
 import { processAndUploadImage } from '@/lib/services/image.service';
+import { listLaminates } from '@/lib/services/laminate.service';
 import type { DoorInput, UpdateDoorInput, DoorQuery } from '@/schemas/door.schema';
+import type { LaminateQuery } from '@/schemas/laminate.schema';
 
 export async function listDoors(query: DoorQuery) {
   await connectToDatabase();
@@ -91,4 +93,23 @@ export async function addDoorImage(id: string, file: Buffer, altText: string, is
   door.images.push({ url, altText, isPrimary, sortOrder: door.images.length });
   await door.save();
   return door;
+}
+
+export async function updateDoorExclusions(id: string, excludedLaminateIds: string[]) {
+  await connectToDatabase();
+  const door = await Door.findByIdAndUpdate(id, { excludedLaminateIds }, { new: true });
+  if (!door) {
+    throw new NotFoundError('Door not found');
+  }
+  return door;
+}
+
+export async function getCompatibleLaminates(doorId: string, query: LaminateQuery) {
+  await connectToDatabase();
+  const door = await Door.findById(doorId).lean();
+  if (!door) {
+    throw new NotFoundError('Door not found');
+  }
+
+  return listLaminates({ ...query, isActive: true }, { excludeIds: door.excludedLaminateIds });
 }
