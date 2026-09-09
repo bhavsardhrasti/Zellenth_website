@@ -1,0 +1,51 @@
+@theme {
+  /* Colors */
+  --color-background: #faf6f1;
+  --color-surface: #ffffff;
+  --color-text-primary: #3a2a1e;
+  --color-text-secondary: #6b5d52;
+  --color-border: rgba(58, 42, 30, 0.08);
+  --color-accent: #a9784f;
+  --color-accent-hover: #8c6b3f;
+  --color-neutral-tint: rgba(112, 69, 26, 0.06);
+  --color-success-bg: rgba(53, 151, 72, 0.12);
+  --color-success-text: #359748;
+  --color-error-bg: rgba(172, 32, 32, 0.12);
+  --color-error-text: #ac2020;
+  --color-shadow-tint: #5f4a2e;
+
+  /* Type scale */
+  --text-hero: 48px;
+  --text-hero--line-height: 56px;
+  --text-hero--letter-spacing: -1px;
+  --text-h1: 36px;
+  --text-h1--line-height: 44px;
+  --text-h1--letter-spacing: -0.5px;
+  --text-h2: 28px;
+  --text-h2--line-height: 36px;
+  --text-h2--letter-spacing: -0.3px;
+  --text-price: 32px;
+  --text-price--line-height: 40px;
+  --text-price--letter-spacing: -0.5px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-badge: 12px;
+  --text-badge--line-height: 16px;
+  --text-button: 14px;
+  --text-button--line-height: 20px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-card:
+    0px 3px 3px 0px rgba(95, 74, 46, 0.04), 0px 1px 2px 0px rgba(95, 74, 46, 0.04),
+    0px 0px 0px 1px rgba(95, 74, 46, 0.04);
+  --shadow-elevated:
+    0px 7px 8px 0px rgba(95, 74, 46, 0.1), 0px 28px 33px 0px rgba(95, 74, 46, 0.09),
+    0px 63px 75px 0px rgba(95, 74, 46, 0.05), 0px 111px 132px 0px rgba(95, 74, 46, 0.02);
+}
