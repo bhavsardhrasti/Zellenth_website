@@ -1,3 +1,5 @@
+import type { Types } from 'mongoose';
+
 import { connectToDatabase } from '@/lib/db/connect';
 import { Laminate } from '@/lib/db/models/Laminate.model';
 import { NotFoundError, ConflictError } from '@/lib/errors';
@@ -5,7 +7,11 @@ import { buildPaginatedMeta } from '@/lib/api/response';
 import { processAndUploadImage } from '@/lib/services/image.service';
 import type { LaminateInput, UpdateLaminateInput, LaminateQuery } from '@/schemas/laminate.schema';
 
-export async function listLaminates(query: LaminateQuery) {
+interface ListLaminatesOptions {
+  excludeIds?: Types.ObjectId[];
+}
+
+export async function listLaminates(query: LaminateQuery, options: ListLaminatesOptions = {}) {
   await connectToDatabase();
   const { page, limit, categoryId, search, tag, finish, colorFamily, isActive, sortBy, sortOrder } =
     query;
@@ -16,6 +22,7 @@ export async function listLaminates(query: LaminateQuery) {
   if (finish) filter.finish = finish;
   if (colorFamily) filter.colorFamily = colorFamily;
   if (isActive !== undefined) filter.isActive = isActive;
+  if (options.excludeIds?.length) filter._id = { $nin: options.excludeIds };
   if (search) {
     filter.$or = [
       { name: { $regex: search, $options: 'i' } },
