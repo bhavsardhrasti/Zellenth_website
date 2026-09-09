@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 
+import { requireAdmin } from '@/lib/auth';
 import { withApiHandler } from '@/lib/api/with-handler';
 import { created, paginated } from '@/lib/api/response';
 import { laminateSchema, laminateQuerySchema } from '@/schemas/laminate.schema';
@@ -12,6 +13,7 @@ export const GET = withApiHandler(async (request: NextRequest) => {
 });
 
 export const POST = withApiHandler(async (request: NextRequest) => {
+  await requireAdmin();
   const body = laminateSchema.parse(await request.json());
   const laminate = await createLaminate(body);
   return created(laminate);
