@@ -35,7 +35,7 @@ echo "✅ TypeScript check passed"
 echo "-----------------------------------"
 
 echo "🚫 Checking for console.log / debugger..."
-SRC_STAGED_FILES=$(echo "$STAGED_FILES" | grep -E '^src/.*\.(ts|tsx|js|jsx)$')
+SRC_STAGED_FILES=$(echo "$STAGED_FILES" | grep -E '^src/.*\.(ts|tsx|js|jsx)$' || true)
 if [ -n "$SRC_STAGED_FILES" ] && grep -n "console\.log(\|^\s*debugger" $SRC_STAGED_FILES; then
   echo "❌ Remove console.log/debugger before committing."
   exit 1

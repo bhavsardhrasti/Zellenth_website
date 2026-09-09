@@ -4,9 +4,9 @@ BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
 REMOTE_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null | cut -d'/' -f2)
 TARGET_BRANCH="${REMOTE_BRANCH:-$BRANCH}"
 
-# Block direct push to main/develop
-if [ "$TARGET_BRANCH" = "main" ] || [ "$TARGET_BRANCH" = "develop" ]; then
-  echo "Direct push to main/develop is not allowed. Please open a PR."
+# Block direct push to main
+if [ "$TARGET_BRANCH" = "main" ]; then
+  echo "Direct push to main is not allowed. Please open a PR."
   exit 1
 fi
 
