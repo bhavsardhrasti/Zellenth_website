@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 
+import { requireAdmin } from '@/lib/auth';
 import { withApiHandler } from '@/lib/api/with-handler';
 import { ok } from '@/lib/api/response';
 import { objectIdSchema } from '@/schemas/common.schema';
@@ -22,6 +23,7 @@ export const GET = withApiHandler(async (_request: NextRequest, { params }: Rout
 });
 
 export const PATCH = withApiHandler(async (request: NextRequest, { params }: RouteContext) => {
+  await requireAdmin();
   const { id } = await params;
   objectIdSchema.parse(id);
   const body = updateLaminateCategorySchema.parse(await request.json());
@@ -30,6 +32,7 @@ export const PATCH = withApiHandler(async (request: NextRequest, { params }: Rou
 });
 
 export const DELETE = withApiHandler(async (_request: NextRequest, { params }: RouteContext) => {
+  await requireAdmin();
   const { id } = await params;
   objectIdSchema.parse(id);
   const category = await archiveLaminateCategory(id);

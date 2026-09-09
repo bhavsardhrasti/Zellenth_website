@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 
+import { requireAdmin } from '@/lib/auth';
 import { withApiHandler } from '@/lib/api/with-handler';
 import { created } from '@/lib/api/response';
 import { objectIdSchema } from '@/schemas/common.schema';
@@ -11,6 +12,7 @@ interface RouteContext {
 }
 
 export const POST = withApiHandler(async (request: NextRequest, { params }: RouteContext) => {
+  await requireAdmin();
   const { id } = await params;
   objectIdSchema.parse(id);
 
