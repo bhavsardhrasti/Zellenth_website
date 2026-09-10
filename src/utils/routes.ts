@@ -8,4 +8,13 @@ export const ROUTES = {
   LAMINATES_ID: (id: string) => `/laminates/${id}`,
   VISUALIZER: '/visualizer',
   WATCHLIST: '/watchlist',
+  ADMIN: '/admin',
+  ADMIN_DOOR_CATEGORIES: '/admin/door-categories',
+  ADMIN_LAMINATE_CATEGORIES: '/admin/laminate-categories',
+  ADMIN_DOORS: '/admin/doors',
+  ADMIN_DOORS_NEW: '/admin/doors/new',
+  ADMIN_DOORS_ID: (id: string) => `/admin/doors/${id}`,
+  ADMIN_LAMINATES: '/admin/laminates',
+  ADMIN_LAMINATES_NEW: '/admin/laminates/new',
+  ADMIN_LAMINATES_ID: (id: string) => `/admin/laminates/${id}`,
 };

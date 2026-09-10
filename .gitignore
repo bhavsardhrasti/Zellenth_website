@@ -30,3 +30,5 @@ next-env.d.ts
 
 /ai
 /.claude
+/.agents
+/skills-lock.json

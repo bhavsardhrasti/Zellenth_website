@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+const optionalUrl = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.string().url().optional(),
+);
+
+const optionalString = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.string().optional(),
+);
+
 const serverEnvSchema = z.object({
   MONGODB_URI: z.string().min(1),
 
@@ -10,26 +20,26 @@ const serverEnvSchema = z.object({
   R2_ACCESS_KEY_ID: z.string().min(1),
   R2_SECRET_ACCESS_KEY: z.string().min(1),
   R2_BUCKET_NAME: z.string().min(1),
-  CLOUDFLARE_API_TOKEN: z.string().optional(),
+  CLOUDFLARE_API_TOKEN: optionalString,
 
-  MEILISEARCH_HOST: z.string().url().optional(),
-  MEILISEARCH_API_KEY: z.string().optional(),
+  MEILISEARCH_HOST: optionalUrl,
+  MEILISEARCH_API_KEY: optionalString,
 
-  EMAIL_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().optional(),
+  EMAIL_API_KEY: optionalString,
+  EMAIL_FROM: optionalString,
 
-  RECAPTCHA_SECRET_KEY: z.string().optional(),
+  RECAPTCHA_SECRET_KEY: optionalString,
 
-  SENTRY_DSN: z.string().optional(),
+  SENTRY_DSN: optionalString,
 });
 
 const clientEnvSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
   NEXT_PUBLIC_R2_PUBLIC_URL: z.string().url(),
-  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
-  NEXT_PUBLIC_GA4_ID: z.string().optional(),
-  NEXT_PUBLIC_META_PIXEL_ID: z.string().optional(),
-  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: optionalString,
+  NEXT_PUBLIC_GA4_ID: optionalString,
+  NEXT_PUBLIC_META_PIXEL_ID: optionalString,
+  NEXT_PUBLIC_SENTRY_DSN: optionalString,
 });
 
 function loadServerEnv() {
