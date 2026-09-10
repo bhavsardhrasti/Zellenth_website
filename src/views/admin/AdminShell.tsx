@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
@@ -62,8 +63,15 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
       >
         <div className="flex items-center justify-between px-2">
           <div className={cn(isCollapsed && 'lg:hidden')}>
-            <span className="font-display text-h2 text-text-primary">Zellenth</span>
-            <span className="text-badge text-text-secondary block">Admin</span>
+            <Image
+              src="/assets/logo/zellenth-logo-v2.webp"
+              alt="Zellenth"
+              width={816}
+              height={241}
+              priority
+              className="h-8 w-auto"
+            />
+            <span className="text-badge text-text-secondary mt-1 block">Admin</span>
           </div>
           <button
             type="button"
@@ -120,7 +128,13 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="font-display text-h2 text-text-primary lg:hidden">Zellenth</span>
+          <Image
+            src="/assets/logo/zellenth-logo-v2.webp"
+            alt="Zellenth"
+            width={816}
+            height={241}
+            className="h-6 w-auto lg:hidden"
+          />
           <span className="hidden flex-1 lg:block" />
           <UserMenu name={userName} email={userEmail} />
         </header>
