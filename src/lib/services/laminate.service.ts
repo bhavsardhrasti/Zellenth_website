@@ -2,10 +2,12 @@ import type { Types } from 'mongoose';
 
 import { connectToDatabase } from '@/lib/db/connect';
 import { Laminate } from '@/lib/db/models/Laminate.model';
+import { Door } from '@/lib/db/models/Door.model';
 import { NotFoundError, ConflictError } from '@/lib/errors';
 import { buildPaginatedMeta } from '@/lib/api/response';
 import { processAndUploadImage } from '@/lib/services/image.service';
 import type { LaminateInput, UpdateLaminateInput, LaminateQuery } from '@/schemas/laminate.schema';
+import type { DoorQuery } from '@/schemas/door.schema';
 
 interface ListLaminatesOptions {
   excludeIds?: Types.ObjectId[];
@@ -44,6 +46,15 @@ export async function listLaminates(query: LaminateQuery, options: ListLaminates
 export async function getLaminateById(id: string) {
   await connectToDatabase();
   const laminate = await Laminate.findById(id).lean();
+  if (!laminate) {
+    throw new NotFoundError('Laminate not found');
+  }
+  return laminate;
+}
+
+export async function getLaminateBySlug(slug: string) {
+  await connectToDatabase();
+  const laminate = await Laminate.findOne({ slug, isActive: true }).lean();
   if (!laminate) {
     throw new NotFoundError('Laminate not found');
   }
@@ -106,4 +117,36 @@ export async function addLaminateImage(
   laminate.images.push({ url, altText, isPrimary, sortOrder: laminate.images.length });
   await laminate.save();
   return laminate;
+}
+
+export async function getCompatibleDoorsForLaminate(laminateId: string, query: DoorQuery) {
+  await connectToDatabase();
+  const laminate = await Laminate.findById(laminateId).lean();
+  if (!laminate) {
+    throw new NotFoundError('Laminate not found');
+  }
+
+  const { page, limit, categoryId, search, tag, sortBy, sortOrder } = query;
+  const filter: Record<string, unknown> = {
+    isActive: true,
+    excludedLaminateIds: { $ne: laminateId },
+  };
+  if (categoryId) filter.categoryId = categoryId;
+  if (tag) filter.tags = tag;
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { code: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  const skip = (page - 1) * limit;
+  const sort: Record<string, 1 | -1> = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+
+  const [items, total] = await Promise.all([
+    Door.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+    Door.countDocuments(filter),
+  ]);
+
+  return { items, meta: buildPaginatedMeta(total, page, limit) };
 }
