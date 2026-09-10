@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'motion/react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 const SWATCHES = [
@@ -58,19 +59,24 @@ export default function ComingSoonView() {
       ))}
 
       <div className="relative flex max-w-xl flex-col items-center gap-6 text-center">
-        <span className="font-accent text-accent text-xs tracking-[0.3em] uppercase sm:text-sm">
-          Zellenth
-        </span>
+        <Image
+          src="/assets/logo/zellenth-logo-v2.webp"
+          alt="Zellenth"
+          width={816}
+          height={241}
+          priority
+          className="h-10 w-auto sm:h-12"
+        />
 
         <DoorMark />
 
         <div>
-          <h1 className="font-display text-h1 text-text-primary sm:text-hero">
+          <h1 className="font-marketing-display font-bold text-h1 text-text-primary sm:text-marketing-hero">
             Any laminate.
             <br />
             Any door.
           </h1>
-          <div className="text-accent font-display relative mt-1 h-9 w-full sm:h-11">
+          <div className="text-accent font-marketing-display font-bold relative mt-1 h-9 w-full sm:h-11">
             <RotatingWord />
           </div>
         </div>
@@ -84,7 +90,7 @@ export default function ComingSoonView() {
           Made in Ahmedabad
         </span>
 
-        <p className="font-handwritten text-text-secondary mt-4 text-lg">
+        <p className="font-body text-text-secondary mt-4 text-lg italic">
           &ldquo;Crafted, not just manufactured.&rdquo;
         </p>
       </div>
