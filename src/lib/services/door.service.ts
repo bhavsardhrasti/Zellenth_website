@@ -42,6 +42,15 @@ export async function getDoorById(id: string) {
   return door;
 }
 
+export async function getDoorBySlug(slug: string) {
+  await connectToDatabase();
+  const door = await Door.findOne({ slug, isActive: true }).lean();
+  if (!door) {
+    throw new NotFoundError('Door not found');
+  }
+  return door;
+}
+
 export async function createDoor(input: DoorInput) {
   await connectToDatabase();
   const existing = await Door.findOne({ $or: [{ code: input.code }, { slug: input.slug }] });
