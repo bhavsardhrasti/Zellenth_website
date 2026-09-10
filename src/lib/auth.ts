@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 
+import { authConfig } from '@/lib/auth.config';
 import { connectToDatabase } from '@/lib/db/connect';
 import { User } from '@/lib/db/models/User.model';
 import { UnauthorizedError, ForbiddenError } from '@/lib/errors';
@@ -9,9 +10,8 @@ import { server } from '@/lib/env';
 import type { UserRole } from '@/lib/db/models/User.model';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   secret: server.NEXTAUTH_SECRET,
-  session: { strategy: 'jwt' },
-  pages: { signIn: '/login' },
   providers: [
     Credentials({
       credentials: {
@@ -48,23 +48,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-      }
-      return token;
-    },
-    session({ session, token }) {
-      session.user.id = token.id as string;
-      session.user.role = token.role as UserRole;
-      return session;
-    },
-  },
 });
 
-export async function requireAuth(): Promise<{ id: string; role: UserRole }> {
+interface SessionUser {
+  id: string;
+  role: UserRole;
+  name?: string | null;
+  email?: string | null;
+}
+
+export async function requireAuth(): Promise<SessionUser> {
   const session = await auth();
   if (!session?.user) {
     throw new UnauthorizedError('Authentication required');
@@ -72,7 +65,7 @@ export async function requireAuth(): Promise<{ id: string; role: UserRole }> {
   return session.user;
 }
 
-export async function requireAdmin(): Promise<{ id: string; role: UserRole }> {
+export async function requireAdmin(): Promise<SessionUser> {
   const user = await requireAuth();
   if (user.role !== 'admin') {
     throw new ForbiddenError('Admin access required');
