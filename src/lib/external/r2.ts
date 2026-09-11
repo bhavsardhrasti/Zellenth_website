@@ -1,9 +1,4 @@
-import {
-  S3Client,
-  PutObjectCommand,
-  DeleteObjectCommand,
-  CopyObjectCommand,
-} from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import { server, client } from '@/lib/env';
@@ -31,16 +26,6 @@ export async function uploadToR2(key: string, body: Buffer, contentType: string)
     }),
   );
   return getPublicUrl(key);
-}
-
-export async function copyInR2(sourceKey: string, destinationKey: string): Promise<void> {
-  await r2Client.send(
-    new CopyObjectCommand({
-      Bucket: server.R2_BUCKET_NAME,
-      CopySource: `${server.R2_BUCKET_NAME}/${sourceKey}`,
-      Key: destinationKey,
-    }),
-  );
 }
 
 export async function deleteFromR2(key: string): Promise<void> {
