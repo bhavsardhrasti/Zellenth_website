@@ -49,7 +49,7 @@ export async function processAndUploadImage(
   buffer: Buffer,
   keyPrefix: string,
 ): Promise<ImageVariant> {
-  const originalKey = `${keyPrefix}/original.webp`;
+  const originalKey = `${keyPrefix}-original.webp`;
   const original = await uploadToR2(
     originalKey,
     await sharp(buffer).webp({ quality: 90 }).toBuffer(),
@@ -63,7 +63,7 @@ export async function processAndUploadImage(
           .resize({ width, withoutEnlargement: true })
           .webp({ quality: 85 })
           .toBuffer();
-        const url = await uploadToR2(`${keyPrefix}/${name}.webp`, resized, 'image/webp');
+        const url = await uploadToR2(`${keyPrefix}-${name}.webp`, resized, 'image/webp');
         return [name, url] as const;
       },
     ),
