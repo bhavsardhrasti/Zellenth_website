@@ -105,7 +105,7 @@ export default function DoorVisualizerView({
               Pick a laminate to see how it looks on this door.
             </p>
           </div>
-          <div className="flex items-end gap-3">
+          <div className="flex flex-wrap items-end gap-3">
             <Select
               label="Laminate"
               placeholder="Select a laminate..."
@@ -123,6 +123,7 @@ export default function DoorVisualizerView({
               icon={Sparkles}
               disabled={!textureUrl}
               onClick={openFullScreenPreview}
+              className="whitespace-nowrap"
             >
               Full-screen
             </Button>
@@ -130,6 +131,7 @@ export default function DoorVisualizerView({
               icon={MessageCircle}
               disabled={!selectedLaminate}
               onClick={() => setIsEnquiryOpen(true)}
+              className="whitespace-nowrap"
             >
               Enquire
             </Button>
