@@ -12,6 +12,7 @@ interface ModalWrapperProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  titleIcon?: ReactNode;
   hideTitle?: boolean;
   hideCloseButton?: boolean;
   footer?: ReactNode;
@@ -23,6 +24,7 @@ export function ModalWrapper({
   isOpen,
   onClose,
   title,
+  titleIcon,
   hideTitle = false,
   hideCloseButton = false,
   footer,
@@ -82,7 +84,10 @@ export function ModalWrapper({
             {((title && !hideTitle) || !hideCloseButton) && (
               <div className="mb-4 flex items-start justify-between gap-4">
                 {title && !hideTitle ? (
-                  <h2 className="font-display text-h2 text-text-primary">{title}</h2>
+                  <div className="flex items-center gap-3">
+                    {titleIcon}
+                    <h2 className="font-display text-h2 text-text-primary">{title}</h2>
+                  </div>
                 ) : (
                   <span />
                 )}

@@ -29,7 +29,13 @@ export function ConfirmModal({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      hideTitle
+      titleIcon={
+        variant === 'danger' && (
+          <span className="bg-error-bg text-error-text flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
+            <AlertTriangle aria-hidden className="h-5 w-5" />
+          </span>
+        )
+      }
       footer={
         <>
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>
@@ -41,17 +47,7 @@ export function ConfirmModal({
         </>
       }
     >
-      <div className="flex items-start gap-3">
-        {variant === 'danger' && (
-          <span className="bg-error-bg text-error-text flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
-            <AlertTriangle aria-hidden className="h-5 w-5" />
-          </span>
-        )}
-        <div>
-          <h2 className="font-display text-h2 text-text-primary">{title}</h2>
-          <p className="text-body text-text-secondary mt-2">{description}</p>
-        </div>
-      </div>
+      <p className="text-body text-text-secondary">{description}</p>
     </ModalWrapper>
   );
 }
