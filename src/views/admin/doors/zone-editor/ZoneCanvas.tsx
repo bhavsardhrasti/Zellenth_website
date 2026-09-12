@@ -32,6 +32,10 @@ interface ZoneCanvasProps {
   onImageReady: (size: { width: number; height: number }) => void;
   onImageError: () => void;
   onPointAdded: (points: ZonePoint[]) => void;
+  /** Applies previewTextureUrl to every zone at once instead of just previewZoneId — used by the read-only shopper visualizer. */
+  previewAllZones?: boolean;
+  /** Whether zones with no active preview still render their idle outline/fill (admin editor) or stay invisible (visualizer). */
+  showIdleZones?: boolean;
 }
 
 export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function ZoneCanvas(
@@ -44,6 +48,8 @@ export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function
     onImageReady,
     onImageError,
     onPointAdded,
+    previewAllZones = false,
+    showIdleZones = true,
   },
   ref,
 ) {
@@ -187,7 +193,8 @@ export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function
     zonePolygonsRef.current.clear();
 
     zones.forEach((zone) => {
-      const isPreviewing = zone.zoneId === previewZoneId && previewTextureUrl;
+      const isPreviewing =
+        Boolean(previewTextureUrl) && (previewAllZones || zone.zoneId === previewZoneId);
 
       const addPolygon = (fill: fabric.Polygon['fill']) => {
         const polygon = new fabric.Polygon(zone.points, {
@@ -201,7 +208,7 @@ export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function
         zonePolygonsRef.current.set(zone.zoneId, polygon);
       };
 
-      if (isPreviewing) {
+      if (isPreviewing && previewTextureUrl) {
         fabric.FabricImage.fromURL(previewTextureUrl)
           .then((img) => {
             const pattern = new fabric.Pattern({ source: img.getElement() as HTMLImageElement });
@@ -212,14 +219,16 @@ export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function
               canvas.renderAll();
             }
           })
-          .catch(() => addPolygon(ZONE_FILL));
-      } else {
+          .catch(() => {
+            if (showIdleZones) addPolygon(ZONE_FILL);
+          });
+      } else if (showIdleZones) {
         addPolygon(ZONE_FILL);
       }
     });
 
     canvas.renderAll();
-  }, [zones, previewZoneId, previewTextureUrl, isCanvasReady]);
+  }, [zones, previewZoneId, previewTextureUrl, previewAllZones, showIdleZones, isCanvasReady]);
 
   useImperativeHandle(ref, () => ({
     captureLaminatedSnapshot: async (textureUrl: string) => {

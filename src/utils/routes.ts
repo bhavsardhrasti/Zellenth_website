@@ -4,6 +4,7 @@ export const ROUTES = {
   REGISTER: '/register',
   DOORS: '/doors',
   DOORS_ID: (id: string) => `/doors/${id}`,
+  DOORS_VISUALIZE: (slug: string) => `/doors/${slug}/visualize`,
   LAMINATES: '/laminates',
   LAMINATES_ID: (id: string) => `/laminates/${id}`,
   VISUALIZER: '/visualizer',

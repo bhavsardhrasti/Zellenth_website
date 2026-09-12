@@ -1,6 +1,9 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import type { Route } from 'next';
 
 import LaminateCard from '@/views/laminates/LaminateCard';
+import { ROUTES } from '@/utils/routes';
 import type { DoorDocument } from '@/lib/db/models/Door.model';
 import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
 
@@ -53,9 +56,14 @@ export default function DoorDetailView({
               {door.dimensions.width} x {door.dimensions.height} {door.dimensions.unit}
             </p>
           ) : null}
-          <button className="bg-accent hover:bg-accent-hover shadow-card cursor-pointer rounded-sm px-6 py-3 font-medium text-white transition-colors">
-            Try Laminates
-          </button>
+          {door.zones.length > 0 ? (
+            <Link
+              href={ROUTES.DOORS_VISUALIZE(door.slug) as Route}
+              className="bg-accent hover:bg-accent-hover shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium text-white transition-colors"
+            >
+              Try Laminates
+            </Link>
+          ) : null}
         </div>
       </div>
 
