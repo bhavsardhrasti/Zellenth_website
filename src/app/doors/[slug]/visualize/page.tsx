@@ -39,6 +39,7 @@ export default async function DoorVisualizePage({ params, searchParams }: DoorVi
   });
 
   const visualizerDoor = {
+    id: door._id.toString(),
     name: door.name,
     slug: door.slug,
     images: door.images,

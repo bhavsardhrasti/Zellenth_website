@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { ModalWrapper } from '@/components/ui/modals/ModalWrapper';
@@ -26,9 +26,31 @@ export function FormModal({
   isSubmitDisabled = false,
   error,
 }: FormModalProps) {
+  const formId = useId();
+
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} title={title}>
+    <ModalWrapper
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      footer={
+        <>
+          <Button type="button" variant="secondary" onClick={onClose} disabled={isLoading}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form={formId}
+            isLoading={isLoading}
+            disabled={isLoading || isSubmitDisabled}
+          >
+            {submitLabel}
+          </Button>
+        </>
+      }
+    >
       <form
+        id={formId}
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
@@ -39,14 +61,6 @@ export function FormModal({
         {error && (
           <p className="text-body-sm bg-error-bg text-error-text rounded-sm px-3 py-2">{error}</p>
         )}
-        <div className="mt-2 flex justify-end gap-3">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button type="submit" isLoading={isLoading} disabled={isLoading || isSubmitDisabled}>
-            {submitLabel}
-          </Button>
-        </div>
       </form>
     </ModalWrapper>
   );

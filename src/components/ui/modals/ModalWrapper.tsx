@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'motion/react';
+import { X } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -12,6 +13,8 @@ interface ModalWrapperProps {
   onClose: () => void;
   title?: string;
   hideTitle?: boolean;
+  hideCloseButton?: boolean;
+  footer?: ReactNode;
   children: ReactNode;
   className?: string;
 }
@@ -21,6 +24,8 @@ export function ModalWrapper({
   onClose,
   title,
   hideTitle = false,
+  hideCloseButton = false,
+  footer,
   children,
   className,
 }: ModalWrapperProps) {
@@ -74,10 +79,27 @@ export function ModalWrapper({
               className,
             )}
           >
-            {title && !hideTitle && (
-              <h2 className="font-display text-h2 text-text-primary mb-4">{title}</h2>
+            {((title && !hideTitle) || !hideCloseButton) && (
+              <div className="mb-4 flex items-start justify-between gap-4">
+                {title && !hideTitle ? (
+                  <h2 className="font-display text-h2 text-text-primary">{title}</h2>
+                ) : (
+                  <span />
+                )}
+                {!hideCloseButton && (
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    aria-label="Close"
+                    className="text-text-secondary hover:text-text-primary hover:bg-neutral-tint shrink-0 cursor-pointer rounded-full p-1 transition-colors"
+                  >
+                    <X aria-hidden className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
             )}
             {children}
+            {footer && <div className="mt-6 flex justify-end gap-3">{footer}</div>}
           </motion.div>
         </motion.div>
       )}
