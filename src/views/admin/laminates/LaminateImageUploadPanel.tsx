@@ -150,7 +150,7 @@ export function LaminateImageUploadPanel({ laminateId }: LaminateImageUploadPane
                     type="button"
                     onClick={() => makePrimary(index)}
                     disabled={updatingIndex === index}
-                    className="text-badge text-text-secondary hover:text-accent flex cursor-pointer items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="text-badge text-text-secondary hover:text-brand flex cursor-pointer items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <Star aria-hidden className="h-3 w-3" />
                     Set primary

@@ -278,7 +278,7 @@ export function ZoneEditorView({ doorId }: ZoneEditorViewProps) {
                   onClick={() =>
                     setPreviewZoneId((current) => (current === zone.zoneId ? null : zone.zoneId))
                   }
-                  className="cursor-pointer text-text-secondary hover:text-accent"
+                  className="cursor-pointer text-text-secondary hover:text-brand"
                 >
                   {zone.zoneId === previewZoneId ? (
                     <EyeOff className="h-4 w-4" />

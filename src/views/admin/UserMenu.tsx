@@ -63,10 +63,10 @@ export function UserMenu({ name, email }: UserMenuProps) {
         aria-haspopup="true"
         className={cn(
           'border-border flex cursor-pointer items-center gap-2.5 rounded-md border px-2.5 py-1.5 transition-colors',
-          isOpen ? 'border-accent bg-neutral-tint' : 'hover:bg-neutral-tint',
+          isOpen ? 'border-brand bg-neutral-tint' : 'hover:bg-neutral-tint',
         )}
       >
-        <span className="bg-accent flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white">
+        <span className="bg-brand flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white">
           {initials}
         </span>
         <span className="text-body-sm text-text-primary hidden max-w-[140px] truncate font-medium sm:block">
@@ -84,7 +84,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
       {isOpen && (
         <div className="border-border bg-surface shadow-elevated rounded-md absolute top-full right-0 z-50 mt-2 w-56 overflow-hidden border">
           <div className="border-border flex items-center gap-3 border-b px-4 py-3.5">
-            <span className="bg-accent flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white">
+            <span className="bg-brand flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white">
               {initials}
             </span>
             <div className="min-w-0">
