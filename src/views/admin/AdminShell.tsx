@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   DoorClosed,
+  Inbox,
   Layers,
   Menu,
   Palette,
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { label: 'Laminate Categories', href: ROUTES.ADMIN_LAMINATE_CATEGORIES, icon: Palette },
   { label: 'Doors', href: ROUTES.ADMIN_DOORS, icon: DoorClosed },
   { label: 'Laminates', href: ROUTES.ADMIN_LAMINATES, icon: Layers },
+  { label: 'Enquiries', href: ROUTES.ADMIN_ENQUIRIES, icon: Inbox },
 ];
 
 interface AdminShellProps {

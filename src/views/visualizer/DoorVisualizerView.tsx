@@ -2,17 +2,19 @@
 
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, MessageCircle, Sparkles } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/inputs/Select';
+import { EnquiryModal } from '@/components/shared/EnquiryModal';
 import { ROUTES } from '@/utils/routes';
 import { ZoneCanvas, type ZoneCanvasHandle } from '@/views/admin/doors/zone-editor/ZoneCanvas';
 import { ZonePreviewModal } from '@/views/admin/doors/zone-editor/ZonePreviewModal';
 import type { DoorZone } from '@/lib/db/models/Door.model';
 
 export interface VisualizerDoor {
+  id: string;
   name: string;
   slug: string;
   images: { url: { full: string }; isPrimary: boolean }[];
@@ -44,6 +46,7 @@ export default function DoorVisualizerView({
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [snapshot, setSnapshot] = useState<string | null>(null);
   const [zones, setZones] = useState<DoorZone[]>([]);
+  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
   const baseImage = door.images.find((image) => image.isPrimary) ?? door.images[0];
 
@@ -123,6 +126,13 @@ export default function DoorVisualizerView({
             >
               Full-screen
             </Button>
+            <Button
+              icon={MessageCircle}
+              disabled={!selectedLaminate}
+              onClick={() => setIsEnquiryOpen(true)}
+            >
+              Enquire
+            </Button>
           </div>
         </div>
 
@@ -154,6 +164,16 @@ export default function DoorVisualizerView({
         onClose={() => setIsPreviewOpen(false)}
         imageUrl={snapshot}
         isLoading={isPreviewLoading}
+      />
+
+      <EnquiryModal
+        isOpen={isEnquiryOpen}
+        onClose={() => setIsEnquiryOpen(false)}
+        source="visualizer"
+        doorId={door.id}
+        doorName={door.name}
+        laminateId={selectedLaminate?.id}
+        laminateName={selectedLaminate?.name}
       />
     </main>
   );

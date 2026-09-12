@@ -19,4 +19,5 @@ export const ROUTES = {
   ADMIN_LAMINATES: '/admin/laminates',
   ADMIN_LAMINATES_NEW: '/admin/laminates/new',
   ADMIN_LAMINATES_ID: (id: string) => `/admin/laminates/${id}`,
+  ADMIN_ENQUIRIES: '/admin/enquiries',
 };

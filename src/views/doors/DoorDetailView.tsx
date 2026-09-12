@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 
 import LaminateCard from '@/views/laminates/LaminateCard';
+import { DoorEnquireButton } from '@/views/doors/DoorEnquireButton';
 import { ROUTES } from '@/utils/routes';
 import type { DoorDocument } from '@/lib/db/models/Door.model';
 import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
@@ -56,14 +57,17 @@ export default function DoorDetailView({
               {door.dimensions.width} x {door.dimensions.height} {door.dimensions.unit}
             </p>
           ) : null}
-          {door.zones.length > 0 ? (
-            <Link
-              href={ROUTES.DOORS_VISUALIZE(door.slug) as Route}
-              className="bg-action hover:bg-action-hover text-action-text shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium transition-colors"
-            >
-              Try Laminates
-            </Link>
-          ) : null}
+          <div className="flex flex-wrap gap-3">
+            {door.zones.length > 0 ? (
+              <Link
+                href={ROUTES.DOORS_VISUALIZE(door.slug) as Route}
+                className="bg-action hover:bg-action-hover text-action-text shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium transition-colors"
+              >
+                Try Laminates
+              </Link>
+            ) : null}
+            <DoorEnquireButton doorId={door._id.toString()} doorName={door.name} />
+          </div>
         </div>
       </div>
 
