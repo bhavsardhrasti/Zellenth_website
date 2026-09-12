@@ -53,7 +53,7 @@ export default function DoorDetailView({
               {door.dimensions.width} x {door.dimensions.height} {door.dimensions.unit}
             </p>
           ) : null}
-          <button className="bg-accent hover:bg-accent-hover shadow-card rounded-sm px-6 py-3 font-medium text-white transition-colors">
+          <button className="bg-accent hover:bg-accent-hover shadow-card cursor-pointer rounded-sm px-6 py-3 font-medium text-white transition-colors">
             Try Laminates
           </button>
         </div>

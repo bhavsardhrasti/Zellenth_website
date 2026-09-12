@@ -46,7 +46,7 @@ export default function LaminateDetailView({ laminate, compatibleDoors }: Lamina
           {laminate.description ? (
             <p className="font-body text-text-secondary">{laminate.description}</p>
           ) : null}
-          <button className="bg-accent hover:bg-accent-hover shadow-card rounded-sm px-6 py-3 font-medium text-white transition-colors">
+          <button className="bg-accent hover:bg-accent-hover shadow-card cursor-pointer rounded-sm px-6 py-3 font-medium text-white transition-colors">
             See on Door
           </button>
         </div>

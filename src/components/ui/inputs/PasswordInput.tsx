@@ -36,7 +36,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, Omit<TextInputProps, '
           <button
             type="button"
             onClick={() => setVisible((current) => !current)}
-            className="text-body-sm text-text-secondary hover:text-text-primary absolute top-1/2 right-3 -translate-y-1/2"
+            className="text-body-sm text-text-secondary hover:text-text-primary absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
             tabIndex={-1}
           >
             {visible ? 'Hide' : 'Show'}
