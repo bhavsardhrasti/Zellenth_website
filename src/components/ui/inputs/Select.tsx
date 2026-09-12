@@ -49,7 +49,7 @@ const selectClassNames = {
   control: ({ isFocused, isDisabled }: { isFocused: boolean; isDisabled: boolean }) =>
     cn(
       'rounded-sm border bg-surface px-1 py-0.5 transition-colors',
-      isFocused ? 'border-accent' : 'border-border',
+      isFocused ? 'border-brand' : 'border-border',
       isDisabled && 'cursor-not-allowed opacity-50',
     ),
   placeholder: () => 'text-text-secondary text-body',
@@ -61,7 +61,7 @@ const selectClassNames = {
     cn(
       'text-body-sm cursor-pointer px-3 py-2',
       isSelected
-        ? 'bg-accent text-white'
+        ? 'bg-brand text-white'
         : isFocused
           ? 'bg-neutral-tint text-text-primary'
           : 'text-text-primary',

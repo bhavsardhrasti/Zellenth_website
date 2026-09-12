@@ -51,7 +51,7 @@ function PaginationControls({ meta }: { meta: PaginatedMeta }) {
       {meta.hasPreviousPage ? (
         <Link
           href={{ pathname: '/doors', query: { page: meta.page - 1 } }}
-          className="text-accent font-body text-sm font-medium"
+          className="text-brand font-body text-sm font-medium"
         >
           Previous
         </Link>
@@ -62,7 +62,7 @@ function PaginationControls({ meta }: { meta: PaginatedMeta }) {
       {meta.hasNextPage ? (
         <Link
           href={{ pathname: '/doors', query: { page: meta.page + 1 } }}
-          className="text-accent font-body text-sm font-medium"
+          className="text-brand font-body text-sm font-medium"
         >
           Next
         </Link>

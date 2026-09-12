@@ -55,7 +55,7 @@ export default function LaminateDetailView({ laminate, compatibleDoors }: Lamina
               href={
                 `${ROUTES.DOORS_VISUALIZE(visualizableDoor.slug)}?laminate=${laminate._id.toString()}` as Route
               }
-              className="bg-accent hover:bg-accent-hover shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium text-white transition-colors"
+              className="bg-action hover:bg-action-hover text-action-text shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium transition-colors"
             >
               See on Door
             </Link>

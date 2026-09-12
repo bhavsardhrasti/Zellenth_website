@@ -94,7 +94,7 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
                 title={isCollapsed ? item.label : undefined}
                 className={cn(
                   'text-body-sm rounded-sm flex items-center gap-3 px-3 py-2 font-medium transition-colors',
-                  isActive ? 'bg-accent text-white' : 'text-text-primary hover:bg-neutral-tint',
+                  isActive ? 'bg-brand text-white' : 'text-text-primary hover:bg-neutral-tint',
                 )}
               >
                 <Icon aria-hidden className="h-4.5 w-4.5 shrink-0" />

@@ -59,7 +59,7 @@ export default function DoorDetailView({
           {door.zones.length > 0 ? (
             <Link
               href={ROUTES.DOORS_VISUALIZE(door.slug) as Route}
-              className="bg-accent hover:bg-accent-hover shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium text-white transition-colors"
+              className="bg-action hover:bg-action-hover text-action-text shadow-card w-fit cursor-pointer rounded-sm px-6 py-3 font-medium transition-colors"
             >
               Try Laminates
             </Link>
