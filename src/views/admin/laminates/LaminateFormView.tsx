@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/Button';
 import { NumberInput } from '@/components/ui/inputs/NumberInput';
-import { SelectInput } from '@/components/ui/inputs/SelectInput';
+import { Select } from '@/components/ui/inputs/Select';
 import { TagInput } from '@/components/ui/inputs/TagInput';
 import { TextAreaInput } from '@/components/ui/inputs/TextAreaInput';
 import { TextInput } from '@/components/ui/inputs/TextInput';
@@ -205,27 +205,44 @@ export function LaminateFormView({ laminateId }: LaminateFormViewProps) {
           {...register('slug')}
         />
 
-        <SelectInput
-          label="Category"
-          required
-          placeholder="Select a category"
-          options={categories.map((category) => ({ value: category._id, label: category.name }))}
-          error={errors.categoryId?.message}
-          {...register('categoryId')}
+        <Controller
+          control={control}
+          name="categoryId"
+          render={({ field }) => (
+            <Select
+              label="Category"
+              required
+              placeholder="Select a category"
+              options={categories.map((category) => ({
+                value: category._id,
+                label: category.name,
+              }))}
+              error={errors.categoryId?.message}
+              value={field.value}
+              onChange={(value) => field.onChange(value ?? '')}
+            />
+          )}
         />
 
         <div className="grid grid-cols-2 gap-4">
-          <SelectInput
-            label="Finish"
-            required
-            placeholder="Select a finish"
-            options={[
-              { value: 'matte', label: 'Matte' },
-              { value: 'gloss', label: 'Gloss' },
-              { value: 'textured', label: 'Textured' },
-            ]}
-            error={errors.finish?.message}
-            {...register('finish')}
+          <Controller
+            control={control}
+            name="finish"
+            render={({ field }) => (
+              <Select
+                label="Finish"
+                required
+                placeholder="Select a finish"
+                options={[
+                  { value: 'matte', label: 'Matte' },
+                  { value: 'gloss', label: 'Gloss' },
+                  { value: 'textured', label: 'Textured' },
+                ]}
+                error={errors.finish?.message}
+                value={field.value}
+                onChange={(value) => field.onChange(value ?? '')}
+              />
+            )}
           />
           <TextInput
             label="Color family"
@@ -236,17 +253,24 @@ export function LaminateFormView({ laminateId }: LaminateFormViewProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <SelectInput
-            label="Grain direction"
-            required
-            placeholder="Select grain direction"
-            options={[
-              { value: 'horizontal', label: 'Horizontal' },
-              { value: 'vertical', label: 'Vertical' },
-              { value: 'no-grain', label: 'No grain' },
-            ]}
-            error={errors.grainDirection?.message}
-            {...register('grainDirection')}
+          <Controller
+            control={control}
+            name="grainDirection"
+            render={({ field }) => (
+              <Select
+                label="Grain direction"
+                required
+                placeholder="Select grain direction"
+                options={[
+                  { value: 'horizontal', label: 'Horizontal' },
+                  { value: 'vertical', label: 'Vertical' },
+                  { value: 'no-grain', label: 'No grain' },
+                ]}
+                error={errors.grainDirection?.message}
+                value={field.value}
+                onChange={(value) => field.onChange(value ?? '')}
+              />
+            )}
           />
           <NumberInput
             label="Pattern scale"

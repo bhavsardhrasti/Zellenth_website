@@ -54,7 +54,7 @@ export function FileDropzone({ onFileSelected, error }: FileDropzoneProps) {
         onClick={() => inputRef.current?.click()}
         className={cn(
           'rounded-md border border-dashed px-6 py-8 text-center transition-colors cursor-pointer',
-          isDragging ? 'border-accent bg-neutral-tint' : 'border-border bg-surface',
+          isDragging ? 'border-brand bg-neutral-tint' : 'border-border bg-surface',
         )}
       >
         <p className="text-body-sm text-text-secondary">

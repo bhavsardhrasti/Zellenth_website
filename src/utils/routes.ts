@@ -4,6 +4,7 @@ export const ROUTES = {
   REGISTER: '/register',
   DOORS: '/doors',
   DOORS_ID: (id: string) => `/doors/${id}`,
+  DOORS_VISUALIZE: (slug: string) => `/doors/${slug}/visualize`,
   LAMINATES: '/laminates',
   LAMINATES_ID: (id: string) => `/laminates/${id}`,
   VISUALIZER: '/visualizer',
@@ -14,7 +15,9 @@ export const ROUTES = {
   ADMIN_DOORS: '/admin/doors',
   ADMIN_DOORS_NEW: '/admin/doors/new',
   ADMIN_DOORS_ID: (id: string) => `/admin/doors/${id}`,
+  ADMIN_DOORS_ZONES: (id: string) => `/admin/doors/${id}/zones`,
   ADMIN_LAMINATES: '/admin/laminates',
   ADMIN_LAMINATES_NEW: '/admin/laminates/new',
   ADMIN_LAMINATES_ID: (id: string) => `/admin/laminates/${id}`,
+  ADMIN_ENQUIRIES: '/admin/enquiries',
 };

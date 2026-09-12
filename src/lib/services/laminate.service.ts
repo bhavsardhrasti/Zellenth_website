@@ -5,7 +5,7 @@ import { Laminate } from '@/lib/db/models/Laminate.model';
 import { Door } from '@/lib/db/models/Door.model';
 import { NotFoundError, ConflictError } from '@/lib/errors';
 import { buildPaginatedMeta } from '@/lib/api/response';
-import { processAndUploadImage } from '@/lib/services/image.service';
+import { processAndUploadImage, deleteImageVariants } from '@/lib/services/image.service';
 import type { LaminateInput, UpdateLaminateInput, LaminateQuery } from '@/schemas/laminate.schema';
 import type { DoorQuery } from '@/schemas/door.schema';
 
@@ -115,6 +115,44 @@ export async function addLaminateImage(
   }
 
   laminate.images.push({ url, altText, isPrimary, sortOrder: laminate.images.length });
+  await laminate.save();
+  return laminate;
+}
+
+export async function setPrimaryLaminateImage(id: string, index: number) {
+  await connectToDatabase();
+  const laminate = await Laminate.findById(id);
+  if (!laminate) {
+    throw new NotFoundError('Laminate not found');
+  }
+  if (!laminate.images[index]) {
+    throw new NotFoundError('Image not found');
+  }
+
+  laminate.images.forEach((image, i) => {
+    image.isPrimary = i === index;
+  });
+  await laminate.save();
+  return laminate;
+}
+
+export async function deleteLaminateImage(id: string, index: number) {
+  await connectToDatabase();
+  const laminate = await Laminate.findById(id);
+  if (!laminate) {
+    throw new NotFoundError('Laminate not found');
+  }
+  const image = laminate.images[index];
+  if (!image) {
+    throw new NotFoundError('Image not found');
+  }
+
+  await deleteImageVariants(image.url);
+  const wasPrimary = image.isPrimary;
+  laminate.images.splice(index, 1);
+  if (wasPrimary && laminate.images[0]) {
+    laminate.images[0].isPrimary = true;
+  }
   await laminate.save();
   return laminate;
 }

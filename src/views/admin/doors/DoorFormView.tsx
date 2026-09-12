@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/Button';
 import { NumberInput } from '@/components/ui/inputs/NumberInput';
-import { SelectInput } from '@/components/ui/inputs/SelectInput';
+import { Select } from '@/components/ui/inputs/Select';
 import { TagInput } from '@/components/ui/inputs/TagInput';
 import { TextAreaInput } from '@/components/ui/inputs/TextAreaInput';
 import { TextInput } from '@/components/ui/inputs/TextInput';
@@ -188,13 +188,23 @@ export function DoorFormView({ doorId }: DoorFormViewProps) {
           {...register('slug')}
         />
 
-        <SelectInput
-          label="Category"
-          required
-          placeholder="Select a category"
-          options={categories.map((category) => ({ value: category._id, label: category.name }))}
-          error={errors.categoryId?.message}
-          {...register('categoryId')}
+        <Controller
+          control={control}
+          name="categoryId"
+          render={({ field }) => (
+            <Select
+              label="Category"
+              required
+              placeholder="Select a category"
+              options={categories.map((category) => ({
+                value: category._id,
+                label: category.name,
+              }))}
+              error={errors.categoryId?.message}
+              value={field.value}
+              onChange={(value) => field.onChange(value ?? '')}
+            />
+          )}
         />
 
         <TextInput label="Pattern type" {...register('patternType')} />
@@ -202,14 +212,21 @@ export function DoorFormView({ doorId }: DoorFormViewProps) {
         <div className="grid grid-cols-3 gap-4">
           <NumberInput label="Width" {...register('width')} />
           <NumberInput label="Height" {...register('height')} />
-          <SelectInput
-            label="Unit"
-            options={[
-              { value: 'mm', label: 'mm' },
-              { value: 'inch', label: 'inch' },
-              { value: 'ft', label: 'ft' },
-            ]}
-            {...register('unit')}
+          <Controller
+            control={control}
+            name="unit"
+            render={({ field }) => (
+              <Select
+                label="Unit"
+                options={[
+                  { value: 'mm', label: 'mm' },
+                  { value: 'inch', label: 'inch' },
+                  { value: 'ft', label: 'ft' },
+                ]}
+                value={field.value}
+                onChange={(value) => field.onChange((value ?? 'mm') as 'mm' | 'inch' | 'ft')}
+              />
+            )}
           />
         </div>
 

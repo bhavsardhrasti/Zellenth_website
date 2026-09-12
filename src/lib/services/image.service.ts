@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 
-import { uploadToR2 } from '@/lib/external/r2';
+import { uploadToR2, deleteFromR2 } from '@/lib/external/r2';
+import { client } from '@/lib/env';
 import { ValidationError } from '@/lib/errors';
 import { ALLOWED_IMAGE_MIME_TYPES, MAX_UPLOAD_SIZE_MB } from '@/utils/constants';
 import type { ImageVariant } from '@/lib/db/models/Door.model';
@@ -77,4 +78,15 @@ export async function processAndUploadImage(
     mid: variants.mid,
     full: variants.full,
   };
+}
+
+export async function deleteImageVariants(variant: ImageVariant): Promise<void> {
+  const prefix = `${client.NEXT_PUBLIC_R2_PUBLIC_URL}/`;
+  const urls = [variant.original, variant.thumbnail, variant.mid, variant.full];
+
+  await Promise.all(
+    urls
+      .filter((url) => url.startsWith(prefix))
+      .map((url) => deleteFromR2(url.slice(prefix.length))),
+  );
 }
