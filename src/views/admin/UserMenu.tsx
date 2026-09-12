@@ -62,7 +62,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
         aria-expanded={isOpen}
         aria-haspopup="true"
         className={cn(
-          'border-border flex items-center gap-2.5 rounded-md border px-2.5 py-1.5 transition-colors',
+          'border-border flex cursor-pointer items-center gap-2.5 rounded-md border px-2.5 py-1.5 transition-colors',
           isOpen ? 'border-accent bg-neutral-tint' : 'hover:bg-neutral-tint',
         )}
       >
@@ -98,7 +98,7 @@ export function UserMenu({ name, email }: UserMenuProps) {
               type="button"
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className="text-body-sm text-error-text hover:bg-error-bg flex w-full items-center gap-3 rounded-sm px-3 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+              className="text-body-sm text-error-text hover:bg-error-bg flex w-full cursor-pointer items-center gap-3 rounded-sm px-3 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
             >
               <LogOut aria-hidden className="h-3.5 w-3.5 shrink-0" />
               {isLoggingOut ? 'Signing out…' : 'Sign out'}

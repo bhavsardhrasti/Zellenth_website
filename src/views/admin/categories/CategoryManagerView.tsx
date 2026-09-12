@@ -2,14 +2,14 @@
 
 import { Plus, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { CheckboxInput } from '@/components/ui/inputs/CheckboxInput';
 import { NumberInput } from '@/components/ui/inputs/NumberInput';
-import { SelectInput } from '@/components/ui/inputs/SelectInput';
+import { Select } from '@/components/ui/inputs/Select';
 import { TextInput } from '@/components/ui/inputs/TextInput';
 import { ConfirmModal } from '@/components/ui/modals/ConfirmModal';
 import { FormModal } from '@/components/ui/modals/FormModal';
@@ -291,11 +291,19 @@ export function CategoryManagerView({ resourceLabel, apiBasePath }: CategoryMana
           error={errors.slug?.message}
           {...register('slug', { required: true })}
         />
-        <SelectInput
-          label="Parent category"
-          placeholder="No parent"
-          options={parentOptions}
-          {...register('parentId')}
+        <Controller
+          control={control}
+          name="parentId"
+          render={({ field }) => (
+            <Select
+              label="Parent category"
+              placeholder="No parent"
+              isClearable
+              options={parentOptions}
+              value={field.value}
+              onChange={(value) => field.onChange(value ?? '')}
+            />
+          )}
         />
         <NumberInput label="Sort order" {...register('sortOrder')} />
         <CheckboxInput label="Active" {...register('isActive')} />

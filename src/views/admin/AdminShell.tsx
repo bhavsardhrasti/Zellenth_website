@@ -76,7 +76,7 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
           <button
             type="button"
             onClick={() => setIsMobileOpen(false)}
-            className="text-text-secondary lg:hidden"
+            className="text-text-secondary cursor-pointer lg:hidden"
             aria-label="Close menu"
           >
             <X className="h-5 w-5" />
@@ -108,7 +108,7 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
           type="button"
           onClick={() => setIsCollapsed((current) => !current)}
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="bg-surface border-border text-text-secondary shadow-card absolute top-16 -right-3 hidden h-6 w-6 items-center justify-center rounded-full border lg:flex"
+          className="bg-surface border-border text-text-secondary shadow-card absolute top-16 -right-3 hidden h-6 w-6 cursor-pointer items-center justify-center rounded-full border lg:flex"
         >
           {isCollapsed ? (
             <ChevronRight className="h-3.5 w-3.5" />
@@ -124,7 +124,7 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
             type="button"
             onClick={() => setIsMobileOpen(true)}
             aria-label="Open menu"
-            className="text-text-primary lg:hidden"
+            className="text-text-primary cursor-pointer lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>

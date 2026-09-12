@@ -31,7 +31,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'text-button font-body rounded-sm inline-flex items-center justify-center gap-2 px-4 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        'text-button font-body rounded-sm inline-flex items-center justify-center gap-2 px-4 py-2 font-medium transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
         VARIANT_CLASSES[variant],
         className,
       )}

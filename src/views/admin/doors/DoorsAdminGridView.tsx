@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
-import { SelectInput } from '@/components/ui/inputs/SelectInput';
+import { Select } from '@/components/ui/inputs/Select';
 import { TextInput } from '@/components/ui/inputs/TextInput';
 import { ConfirmModal } from '@/components/ui/modals/ConfirmModal';
 import {
@@ -119,17 +119,19 @@ export function DoorsAdminGridView() {
           onChange={(event) => setSearchDraft(event.target.value)}
           wrapperClassName="w-64"
         />
-        <SelectInput
+        <Select
           placeholder="All categories"
+          isClearable
           value={searchParams.get('categoryId') ?? ''}
-          onChange={(event) => updateParam('categoryId', event.target.value)}
+          onChange={(value) => updateParam('categoryId', value ?? '')}
           options={categories.map((category) => ({ value: category._id, label: category.name }))}
           wrapperClassName="w-48"
         />
-        <SelectInput
+        <Select
           placeholder="All statuses"
+          isClearable
           value={searchParams.get('isActive') ?? ''}
-          onChange={(event) => updateParam('isActive', event.target.value)}
+          onChange={(value) => updateParam('isActive', value ?? '')}
           options={[
             { value: 'true', label: 'Active' },
             { value: 'false', label: 'Archived' },
