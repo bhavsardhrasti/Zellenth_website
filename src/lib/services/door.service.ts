@@ -2,7 +2,7 @@ import { connectToDatabase } from '@/lib/db/connect';
 import { Door } from '@/lib/db/models/Door.model';
 import { NotFoundError, ConflictError } from '@/lib/errors';
 import { buildPaginatedMeta } from '@/lib/api/response';
-import { processAndUploadImage } from '@/lib/services/image.service';
+import { processAndUploadImage, deleteImageVariants } from '@/lib/services/image.service';
 import { listLaminates } from '@/lib/services/laminate.service';
 import type { DoorInput, UpdateDoorInput, DoorQuery, DoorZonesInput } from '@/schemas/door.schema';
 import type { LaminateQuery } from '@/schemas/laminate.schema';
@@ -100,6 +100,44 @@ export async function addDoorImage(id: string, file: Buffer, altText: string, is
   }
 
   door.images.push({ url, altText, isPrimary, sortOrder: door.images.length });
+  await door.save();
+  return door;
+}
+
+export async function setPrimaryDoorImage(id: string, index: number) {
+  await connectToDatabase();
+  const door = await Door.findById(id);
+  if (!door) {
+    throw new NotFoundError('Door not found');
+  }
+  if (!door.images[index]) {
+    throw new NotFoundError('Image not found');
+  }
+
+  door.images.forEach((image, i) => {
+    image.isPrimary = i === index;
+  });
+  await door.save();
+  return door;
+}
+
+export async function deleteDoorImage(id: string, index: number) {
+  await connectToDatabase();
+  const door = await Door.findById(id);
+  if (!door) {
+    throw new NotFoundError('Door not found');
+  }
+  const image = door.images[index];
+  if (!image) {
+    throw new NotFoundError('Image not found');
+  }
+
+  await deleteImageVariants(image.url);
+  const wasPrimary = image.isPrimary;
+  door.images.splice(index, 1);
+  if (wasPrimary && door.images[0]) {
+    door.images[0].isPrimary = true;
+  }
   await door.save();
   return door;
 }
