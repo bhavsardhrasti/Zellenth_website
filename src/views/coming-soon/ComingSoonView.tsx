@@ -25,7 +25,7 @@ export default function ComingSoonView() {
     <main className="bg-background relative flex min-h-dvh items-center justify-center overflow-hidden px-6 py-16">
       <div
         aria-hidden
-        className="from-accent/10 pointer-events-none absolute inset-0 bg-gradient-to-br via-transparent to-transparent"
+        className="from-brand/10 pointer-events-none absolute inset-0 bg-gradient-to-br via-transparent to-transparent"
       />
       <div
         aria-hidden
@@ -76,7 +76,7 @@ export default function ComingSoonView() {
             <br />
             Any door.
           </h1>
-          <div className="text-accent font-marketing-display font-bold relative mt-1 h-9 w-full sm:h-11">
+          <div className="text-brand font-marketing-display font-bold relative mt-1 h-9 w-full sm:h-11">
             <RotatingWord />
           </div>
         </div>

@@ -40,7 +40,23 @@ export const doorExclusionsSchema = z.object({
   excludedLaminateIds: z.array(objectIdSchema).default([]),
 });
 
+const doorZonePointSchema = z.object({
+  x: z.number().min(0).max(1),
+  y: z.number().min(0).max(1),
+});
+
+const doorZoneSchema = z.object({
+  zoneId: z.string().min(1),
+  label: z.string().max(80).optional(),
+  points: z.array(doorZonePointSchema).min(3),
+});
+
+export const doorZonesSchema = z.object({
+  zones: z.array(doorZoneSchema).default([]),
+});
+
 export type DoorInput = z.infer<typeof doorSchema>;
 export type UpdateDoorInput = z.infer<typeof updateDoorSchema>;
 export type DoorQuery = z.infer<typeof doorQuerySchema>;
 export type DoorExclusionsInput = z.infer<typeof doorExclusionsSchema>;
+export type DoorZonesInput = z.infer<typeof doorZonesSchema>;

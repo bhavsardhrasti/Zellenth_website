@@ -69,7 +69,7 @@ export function TagInput({
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              className="text-text-secondary hover:text-error-text"
+              className="text-text-secondary hover:text-error-text cursor-pointer"
               aria-label={`Remove tag ${tag}`}
             >
               ×

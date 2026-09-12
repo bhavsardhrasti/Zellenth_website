@@ -13,7 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-white hover:bg-accent-hover',
+  primary: 'bg-action text-action-text hover:bg-action-hover',
   secondary: 'bg-surface text-text-primary border border-border hover:bg-neutral-tint',
   ghost: 'bg-transparent text-text-primary hover:bg-neutral-tint',
   danger: 'bg-error-text text-white hover:opacity-90',
@@ -31,7 +31,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'text-button font-body rounded-sm inline-flex items-center justify-center gap-2 px-4 py-2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        'text-button font-body rounded-sm inline-flex items-center justify-center gap-2 px-4 py-2 font-medium transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
         VARIANT_CLASSES[variant],
         className,
       )}
