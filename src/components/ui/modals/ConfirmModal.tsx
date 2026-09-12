@@ -25,7 +25,22 @@ export function ConfirmModal({
   variant = 'danger',
 }: ConfirmModalProps) {
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} title={title} hideTitle>
+    <ModalWrapper
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      hideTitle
+      footer={
+        <>
+          <Button variant="secondary" onClick={onClose} disabled={isLoading}>
+            Cancel
+          </Button>
+          <Button variant={variant} onClick={onConfirm} isLoading={isLoading} disabled={isLoading}>
+            {confirmLabel}
+          </Button>
+        </>
+      }
+    >
       <div className="flex items-start gap-3">
         {variant === 'danger' && (
           <span className="bg-error-bg text-error-text flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
@@ -36,14 +51,6 @@ export function ConfirmModal({
           <h2 className="font-display text-h2 text-text-primary">{title}</h2>
           <p className="text-body text-text-secondary mt-2">{description}</p>
         </div>
-      </div>
-      <div className="mt-6 flex justify-end gap-3">
-        <Button variant="secondary" onClick={onClose} disabled={isLoading}>
-          Cancel
-        </Button>
-        <Button variant={variant} onClick={onConfirm} isLoading={isLoading} disabled={isLoading}>
-          {confirmLabel}
-        </Button>
       </div>
     </ModalWrapper>
   );

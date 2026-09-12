@@ -25,6 +25,7 @@ export function ZonePreviewModal({ isOpen, onClose, imageUrl, isLoading }: ZoneP
       isOpen={isOpen}
       onClose={onClose}
       hideTitle
+      hideCloseButton
       className="!bg-transparent flex h-screen w-screen max-w-none flex-col !p-0 shadow-none"
     >
       <div className="relative flex flex-1 flex-col overflow-hidden rounded-md bg-black/90">
