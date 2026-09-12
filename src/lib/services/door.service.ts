@@ -4,7 +4,7 @@ import { NotFoundError, ConflictError } from '@/lib/errors';
 import { buildPaginatedMeta } from '@/lib/api/response';
 import { processAndUploadImage } from '@/lib/services/image.service';
 import { listLaminates } from '@/lib/services/laminate.service';
-import type { DoorInput, UpdateDoorInput, DoorQuery } from '@/schemas/door.schema';
+import type { DoorInput, UpdateDoorInput, DoorQuery, DoorZonesInput } from '@/schemas/door.schema';
 import type { LaminateQuery } from '@/schemas/laminate.schema';
 
 export async function listDoors(query: DoorQuery) {
@@ -101,6 +101,15 @@ export async function addDoorImage(id: string, file: Buffer, altText: string, is
 
   door.images.push({ url, altText, isPrimary, sortOrder: door.images.length });
   await door.save();
+  return door;
+}
+
+export async function updateDoorZones(id: string, zones: DoorZonesInput['zones']) {
+  await connectToDatabase();
+  const door = await Door.findByIdAndUpdate(id, { zones }, { new: true });
+  if (!door) {
+    throw new NotFoundError('Door not found');
+  }
   return door;
 }
 
