@@ -13,17 +13,19 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 interface DoorsPageProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; category?: string }>;
 }
 
 export default async function DoorsPage({ searchParams }: DoorsPageProps) {
-  const { page } = await searchParams;
-  const query = doorQuerySchema.parse({ page, limit: 24, isActive: true });
+  const { page, category } = await searchParams;
 
-  const [{ items: doors, meta }, { items: categories }] = await Promise.all([
-    listDoors(query),
-    listDoorCategories({ page: 1, limit: 100 }),
-  ]);
+  const { items: categories } = await listDoorCategories({ page: 1, limit: 100 });
+  const categoryId = category
+    ? categories.find((item) => item.slug === category)?._id.toString()
+    : undefined;
+
+  const query = doorQuerySchema.parse({ page, limit: 24, isActive: true, categoryId });
+  const { items: doors, meta } = await listDoors(query);
 
   const categoryNames = Object.fromEntries(
     categories.map((category) => [category._id.toString(), category.name]),

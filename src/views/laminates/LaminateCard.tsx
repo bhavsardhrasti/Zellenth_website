@@ -32,11 +32,13 @@ export default function LaminateCard({ laminate }: LaminateCardProps) {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-1 p-3">
-        <h3 className="font-display text-text-primary text-sm">{laminate.name}</h3>
-        <span className="font-body text-text-secondary text-xs">
-          {laminate.code} · {laminate.colorFamily}
+      <div className="flex flex-col gap-1.5 p-3">
+        <span className="text-brand text-badge font-medium tracking-wider uppercase">
+          {laminate.colorFamily}
         </span>
+        <h3 className="font-display text-text-primary text-sm">{laminate.name}</h3>
+        <span className="font-body text-text-secondary text-xs">{laminate.code}</span>
+        <span className="bg-border group-hover:bg-brand mt-1 h-px w-6 transition-all duration-300 group-hover:w-full" />
       </div>
     </Link>
   );

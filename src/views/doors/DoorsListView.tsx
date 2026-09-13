@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { CardGrid } from '@/components/shared/CardGrid';
 import DoorCard from '@/views/doors/DoorCard';
 import type { DoorDocument } from '@/lib/db/models/Door.model';
 import type { PaginatedMeta } from '@/types/api';
@@ -21,18 +23,20 @@ export default function DoorsListView({ doors, categoryNames, meta }: DoorsListV
 
         {doors.length === 0 ? (
           <p className="font-body text-text-secondary mt-12 text-center">
-            No doors are available yet — check back soon.
+            No doors are available yet. Check back soon.
           </p>
         ) : (
-          <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {doors.map((door) => (
-              <DoorCard
-                key={door.slug}
-                door={door}
-                categoryName={categoryNames[door.categoryId.toString()]}
-              />
-            ))}
-          </div>
+          <AnimatedSection className="mt-10">
+            <CardGrid columns={4}>
+              {doors.map((door) => (
+                <DoorCard
+                  key={door.slug}
+                  door={door}
+                  categoryName={categoryNames[door.categoryId.toString()]}
+                />
+              ))}
+            </CardGrid>
+          </AnimatedSection>
         )}
 
         <PaginationControls meta={meta} />

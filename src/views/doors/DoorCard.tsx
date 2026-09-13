@@ -33,14 +33,15 @@ export default function DoorCard({ door, categoryName }: DoorCardProps) {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-1 p-4">
+      <div className="flex flex-col gap-1.5 p-4">
         {categoryName ? (
-          <span className="bg-neutral-tint text-text-secondary rounded-pill w-fit px-2 py-0.5 text-xs font-medium">
+          <span className="text-brand text-badge font-medium tracking-wider uppercase">
             {categoryName}
           </span>
         ) : null}
         <h3 className="font-display text-text-primary text-lg">{door.name}</h3>
         <span className="font-body text-text-secondary text-sm">{door.code}</span>
+        <span className="bg-border group-hover:bg-brand mt-1 h-px w-8 transition-all duration-300 group-hover:w-full" />
       </div>
     </Link>
   );
