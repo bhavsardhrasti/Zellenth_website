@@ -14,7 +14,7 @@ export function CtaBanner() {
         <div className="flex flex-wrap justify-center gap-3">
           <a
             href={contactInfo.phoneHref}
-            className="bg-surface text-text-primary hover:bg-neutral-tint shadow-card inline-flex items-center gap-2 rounded-sm px-6 py-3 font-medium transition-colors"
+            className="bg-surface text-text-primary hover:bg-surface-warm shadow-card inline-flex items-center gap-2 rounded-sm px-6 py-3 font-medium transition-colors"
           >
             <Phone aria-hidden className="h-4 w-4" />
             {contactInfo.phone}
