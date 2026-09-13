@@ -49,6 +49,7 @@ const SOURCE_LABEL: Record<EnquirySource, string> = {
   visualizer: 'Visualizer',
   door_detail: 'Door page',
   laminate_detail: 'Laminate page',
+  general: 'General',
 };
 
 const STATUS_OPTIONS = [

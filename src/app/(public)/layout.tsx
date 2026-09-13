@@ -1,0 +1,20 @@
+import type { ReactNode } from 'react';
+
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { listDoorCategories } from '@/lib/services/door-category.service';
+
+export default async function PublicLayout({ children }: { children: ReactNode }) {
+  const { items: categories } = await listDoorCategories({ page: 1, limit: 20 });
+  const doorCategories = categories
+    .filter((category) => category.isActive)
+    .map((category) => ({ slug: category.slug, name: category.name }));
+
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <SiteHeader doorCategories={doorCategories} />
+      <div className="flex-1">{children}</div>
+      <SiteFooter />
+    </div>
+  );
+}

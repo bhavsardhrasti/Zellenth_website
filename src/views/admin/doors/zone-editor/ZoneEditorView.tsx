@@ -205,7 +205,7 @@ export function ZoneEditorView({ doorId }: ZoneEditorViewProps) {
           </Link>
           <span className="text-border">|</span>
           <span className="text-body-sm text-text-primary font-medium">
-            {door?.name ?? 'Loading...'} — Laminate Zones
+            {door?.name ?? 'Loading...'}: Laminate Zones
           </span>
         </div>
         <Button

@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 interface LaminatesPageProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; finish?: string }>;
 }
 
 export default async function LaminatesPage({ searchParams }: LaminatesPageProps) {
-  const { page } = await searchParams;
-  const query = laminateQuerySchema.parse({ page, limit: 25, isActive: true });
+  const { page, finish } = await searchParams;
+  const query = laminateQuerySchema.parse({ page, limit: 25, isActive: true, finish });
 
   const { items: laminates, meta } = await listLaminates(query);
 
