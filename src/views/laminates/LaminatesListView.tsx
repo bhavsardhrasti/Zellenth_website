@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { CardGrid } from '@/components/shared/CardGrid';
 import LaminateCard from '@/views/laminates/LaminateCard';
 import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
 import type { PaginatedMeta } from '@/types/api';
@@ -20,14 +22,16 @@ export default function LaminatesListView({ laminates, meta }: LaminatesListView
 
         {laminates.length === 0 ? (
           <p className="font-body text-text-secondary mt-12 text-center">
-            No laminates are available yet — check back soon.
+            No laminates are available yet. Check back soon.
           </p>
         ) : (
-          <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
-            {laminates.map((laminate) => (
-              <LaminateCard key={laminate.slug} laminate={laminate} />
-            ))}
-          </div>
+          <AnimatedSection className="mt-10">
+            <CardGrid columns={5}>
+              {laminates.map((laminate) => (
+                <LaminateCard key={laminate.slug} laminate={laminate} />
+              ))}
+            </CardGrid>
+          </AnimatedSection>
         )}
 
         <PaginationControls meta={meta} />

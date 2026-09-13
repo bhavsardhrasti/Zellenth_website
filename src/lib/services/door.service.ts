@@ -160,6 +160,19 @@ export async function updateDoorExclusions(id: string, excludedLaminateIds: stri
   return door;
 }
 
+export async function getFeaturedDoorsByCategory(categoryIds: string[]) {
+  await connectToDatabase();
+  const results = await Promise.all(
+    categoryIds.map((categoryId) =>
+      Door.findOne({ categoryId, isActive: true, 'images.0': { $exists: true } })
+        .sort({ createdAt: -1 })
+        .select('slug name images categoryId')
+        .lean(),
+    ),
+  );
+  return results.filter((door): door is NonNullable<(typeof results)[number]> => Boolean(door));
+}
+
 export async function getCompatibleLaminates(doorId: string, query: LaminateQuery) {
   await connectToDatabase();
   const door = await Door.findById(doorId).lean();

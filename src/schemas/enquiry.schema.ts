@@ -9,7 +9,7 @@ export const enquirySchema = z.object({
   message: z.string().max(2000).optional(),
   doorId: objectIdSchema.optional(),
   laminateId: objectIdSchema.optional(),
-  source: z.enum(['visualizer', 'door_detail', 'laminate_detail']),
+  source: z.enum(['visualizer', 'door_detail', 'laminate_detail', 'general']),
 });
 
 export const enquiryQuerySchema = paginationQuerySchema.extend({
