@@ -120,9 +120,7 @@ export function EnquiryModal({
           <span className="bg-success-bg text-success-text flex h-12 w-12 items-center justify-center rounded-full">
             <CheckCircle2 aria-hidden className="h-6 w-6" />
           </span>
-          <h2 className="font-display text-h2 text-text-primary">
-            Thanks — we&apos;ll be in touch
-          </h2>
+          <h2 className="font-display text-h2 text-text-primary">Thanks, we&apos;ll be in touch</h2>
           <p className="text-body text-text-secondary">
             Our team will reach out about your enquiry shortly.
           </p>

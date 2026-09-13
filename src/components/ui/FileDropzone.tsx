@@ -61,7 +61,7 @@ export function FileDropzone({ onFileSelected, error }: FileDropzoneProps) {
           Drag & drop an image here, or click to browse
         </p>
         <p className="text-badge text-text-secondary mt-1">
-          JPEG, PNG, or WebP — up to {MAX_UPLOAD_SIZE_MB}MB
+          JPEG, PNG, or WebP, up to {MAX_UPLOAD_SIZE_MB}MB
         </p>
         <input
           ref={inputRef}

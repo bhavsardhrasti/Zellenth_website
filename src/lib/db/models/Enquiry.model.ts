@@ -1,7 +1,7 @@
 import { Schema, model, models, type Document, type Model, type Types } from 'mongoose';
 
 export type EnquiryStatus = 'new' | 'contacted' | 'closed';
-export type EnquirySource = 'visualizer' | 'door_detail' | 'laminate_detail';
+export type EnquirySource = 'visualizer' | 'door_detail' | 'laminate_detail' | 'general';
 
 export interface EnquirySnapshot {
   name: string;
@@ -44,7 +44,7 @@ const enquirySchema = new Schema<EnquiryDocument>(
     status: { type: String, enum: ['new', 'contacted', 'closed'], default: 'new' },
     source: {
       type: String,
-      enum: ['visualizer', 'door_detail', 'laminate_detail'],
+      enum: ['visualizer', 'door_detail', 'laminate_detail', 'general'],
       required: true,
     },
   },
