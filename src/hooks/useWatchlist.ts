@@ -2,19 +2,27 @@
 
 import { useCallback, useSyncExternalStore } from 'react';
 
-export type WatchlistType = 'door' | 'laminate';
-
-export interface WatchlistItem {
-  type: WatchlistType;
+export interface WatchlistRef {
   slug: string;
   name: string;
   code?: string | undefined;
   imageUrl?: string | undefined;
+}
+
+export interface WatchlistItem {
+  key: string;
+  door?: WatchlistRef | undefined;
+  laminate?: WatchlistRef | undefined;
+  comboSnapshotUrl?: string | undefined;
   addedAt: number;
 }
 
 const STORAGE_KEY = 'zellenth_watchlist';
 const CHANGE_EVENT = 'zellenth_watchlist_change';
+
+function buildKey(door?: WatchlistRef, laminate?: WatchlistRef): string {
+  return `${door?.slug ?? '-'}::${laminate?.slug ?? '-'}`;
+}
 
 let cachedRaw: string | null = null;
 let cachedItems: WatchlistItem[] = [];
@@ -76,28 +84,39 @@ export function useWatchlist() {
   );
 
   const isSaved = useCallback(
-    (type: WatchlistType, slug: string) =>
-      items.some((item) => item.type === type && item.slug === slug),
+    (door?: WatchlistRef, laminate?: WatchlistRef) => {
+      const key = buildKey(door, laminate);
+      return items.some((item) => item.key === key);
+    },
     [items],
   );
 
   const toggle = useCallback(
-    (item: Omit<WatchlistItem, 'addedAt'>) => {
-      const exists = items.some((i) => i.type === item.type && i.slug === item.slug);
+    (entry: {
+      door?: WatchlistRef | undefined;
+      laminate?: WatchlistRef | undefined;
+      comboSnapshotUrl?: string | undefined;
+    }) => {
+      const key = buildKey(entry.door, entry.laminate);
+      const exists = items.some((item) => item.key === key);
       const next = exists
-        ? items.filter((i) => !(i.type === item.type && i.slug === item.slug))
-        : [...items, { ...item, addedAt: Date.now() }];
+        ? items.filter((item) => item.key !== key)
+        : [...items, { ...entry, key, addedAt: Date.now() }];
       writeItems(next);
     },
     [items],
   );
 
   const remove = useCallback(
-    (type: WatchlistType, slug: string) => {
-      writeItems(items.filter((i) => !(i.type === type && i.slug === slug)));
+    (key: string) => {
+      writeItems(items.filter((item) => item.key !== key));
     },
     [items],
   );
 
-  return { items, hasLoaded, isSaved, toggle, remove };
+  const clear = useCallback(() => {
+    writeItems([]);
+  }, []);
+
+  return { items, hasLoaded, isSaved, toggle, remove, clear };
 }

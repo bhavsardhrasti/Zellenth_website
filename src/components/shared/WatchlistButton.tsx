@@ -3,11 +3,11 @@
 import { Heart } from 'lucide-react';
 import type { MouseEvent } from 'react';
 
-import { useWatchlist, type WatchlistType } from '@/hooks/useWatchlist';
+import { useWatchlist, type WatchlistRef } from '@/hooks/useWatchlist';
 import { cn } from '@/utils/cn';
 
 interface WatchlistButtonProps {
-  type: WatchlistType;
+  type: 'door' | 'laminate';
   slug: string;
   name: string;
   code?: string | undefined;
@@ -26,12 +26,13 @@ export function WatchlistButton({
   className,
 }: WatchlistButtonProps) {
   const { isSaved, toggle } = useWatchlist();
-  const saved = isSaved(type, slug);
+  const ref: WatchlistRef = { slug, name, code, imageUrl };
+  const saved = isSaved(type === 'door' ? ref : undefined, type === 'laminate' ? ref : undefined);
 
   function handleClick(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    toggle({ type, slug, name, code, imageUrl });
+    toggle(type === 'door' ? { door: ref } : { laminate: ref });
   }
 
   if (variant === 'inline') {
