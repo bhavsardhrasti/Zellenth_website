@@ -1,4 +1,5 @@
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { CtaBanner } from '@/views/home/sections/CtaBanner';
 import { aboutValues } from '@/lib/data/about';
 import { stats } from '@/lib/data/why-choose';
@@ -6,8 +7,12 @@ import { stats } from '@/lib/data/why-choose';
 export default function AboutView() {
   return (
     <main className="bg-background min-h-dvh">
+      <div className="mx-auto max-w-3xl px-6 pt-6 sm:pt-8">
+        <Breadcrumbs items={[{ label: 'About' }]} />
+      </div>
+
       <AnimatedSection>
-        <div className="mx-auto max-w-3xl px-6 pt-16 pb-16 text-center sm:pt-24 sm:pb-24">
+        <div className="mx-auto max-w-3xl px-6 pt-6 pb-16 text-center sm:pb-24">
           <span className="text-brand text-badge font-medium tracking-wider uppercase">
             About Zellenth
           </span>

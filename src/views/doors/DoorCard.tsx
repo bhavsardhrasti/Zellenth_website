@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
+import { WatchlistButton } from '@/components/shared/WatchlistButton';
 import { ROUTES } from '@/utils/routes';
 import type { DoorDocument } from '@/lib/db/models/Door.model';
 
@@ -16,7 +17,7 @@ export default function DoorCard({ door, categoryName }: DoorCardProps) {
   return (
     <Link
       href={ROUTES.DOORS_ID(door.slug) as Route}
-      className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-shadow"
+      className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-all duration-300 hover:-translate-y-1"
     >
       <div className="bg-neutral-tint relative aspect-[4/5] overflow-hidden">
         {primaryImage ? (
@@ -32,6 +33,13 @@ export default function DoorCard({ door, categoryName }: DoorCardProps) {
             No image yet
           </div>
         )}
+        <WatchlistButton
+          type="door"
+          slug={door.slug}
+          name={door.name}
+          code={door.code}
+          imageUrl={primaryImage?.url.thumbnail}
+        />
       </div>
       <div className="flex flex-col gap-1.5 p-4">
         {categoryName ? (

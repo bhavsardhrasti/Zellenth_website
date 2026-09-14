@@ -8,6 +8,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/inputs/Select';
 import { EnquiryModal } from '@/components/shared/EnquiryModal';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { ROUTES } from '@/utils/routes';
 import { ZoneCanvas, type ZoneCanvasHandle } from '@/views/admin/doors/zone-editor/ZoneCanvas';
 import { ZonePreviewModal } from '@/views/admin/doors/zone-editor/ZonePreviewModal';
@@ -177,6 +178,8 @@ export default function DoorVisualizerView({
         laminateId={selectedLaminate?.id}
         laminateName={selectedLaminate?.name}
       />
+
+      <WhatsAppButton />
     </main>
   );
 }

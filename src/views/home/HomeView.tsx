@@ -138,7 +138,7 @@ export default function HomeView({
               </Link>
             </div>
             <div className="mt-10">
-              <Carousel>
+              <Carousel label="Featured doors">
                 {featuredDoors.map((door) => (
                   <DoorCard
                     key={door.slug}
@@ -171,7 +171,7 @@ export default function HomeView({
               </Link>
             </div>
             <div className="mt-10">
-              <Carousel basis="basis-[70%] sm:basis-1/3 lg:basis-1/5">
+              <Carousel label="Featured laminates" basis="basis-[70%] sm:basis-1/3 lg:basis-1/5">
                 {featuredLaminates.map((laminate) => (
                   <LaminateCard key={laminate.slug} laminate={laminate} />
                 ))}

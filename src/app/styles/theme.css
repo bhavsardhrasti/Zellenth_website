@@ -9,9 +9,12 @@
   --color-text-muted: #927f70;
   --color-border: rgba(76, 42, 23, 0.14);
   --color-border-strong: rgba(76, 42, 23, 0.25);
-  --color-brand: #a86637;
-  --color-brand-hover: #8f552d;
+  --color-brand: #8f552d;
+  --color-brand-hover: #774725;
   --color-brand-tint: #efe0cc;
+  --color-accent-2: #b3462c;
+  --color-accent-2-hover: #963a24;
+  --color-accent-2-tint: #f4ded8;
   --color-action: #351b10;
   --color-action-hover: #241109;
   --color-action-text: #fffdf8;

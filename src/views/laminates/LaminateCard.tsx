@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
+import { WatchlistButton } from '@/components/shared/WatchlistButton';
 import { ROUTES } from '@/utils/routes';
 import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
 
@@ -15,7 +16,7 @@ export default function LaminateCard({ laminate }: LaminateCardProps) {
   return (
     <Link
       href={ROUTES.LAMINATES_ID(laminate.slug) as Route}
-      className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-shadow"
+      className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-all duration-300 hover:-translate-y-1"
     >
       <div className="bg-neutral-tint relative aspect-square overflow-hidden">
         {primaryImage ? (
@@ -31,6 +32,13 @@ export default function LaminateCard({ laminate }: LaminateCardProps) {
             No image yet
           </div>
         )}
+        <WatchlistButton
+          type="laminate"
+          slug={laminate.slug}
+          name={laminate.name}
+          code={laminate.code}
+          imageUrl={primaryImage?.url.thumbnail}
+        />
       </div>
       <div className="flex flex-col gap-1.5 p-3">
         <span className="text-brand text-badge font-medium tracking-wider uppercase">
