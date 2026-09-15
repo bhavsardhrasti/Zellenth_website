@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import { CheckCircle2 } from 'lucide-react';
 
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { PageHero } from '@/components/shared/PageHero';
 import type { QuoteRequestItem, QuoteRequestStatus } from '@/lib/db/models/QuoteRequest.model';
 
@@ -64,19 +64,11 @@ export function QuoteRequestView({ data }: { data: QuoteRequestViewData }) {
                 className="bg-surface shadow-card overflow-hidden rounded-md"
               >
                 <div className="bg-neutral-tint relative aspect-square overflow-hidden">
-                  {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt={itemTitle(item)}
-                      fill
-                      sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="text-text-secondary font-body flex h-full items-center justify-center text-xs">
-                      No image
-                    </div>
-                  )}
+                  <ImageWrapper
+                    src={imageUrl}
+                    alt={itemTitle(item)}
+                    sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                  />
                 </div>
                 <div className="p-3">
                   <h3 className="font-display text-text-primary text-sm">{itemTitle(item)}</h3>

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowLeft } from 'lucide-react';
@@ -12,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/inputs/Select';
 import { TextAreaInput } from '@/components/ui/inputs/TextAreaInput';
 import { ErrorBanner } from '@/components/shared/ErrorBanner';
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { apiFetch } from '@/lib/api/client';
 import type { QuoteRequestItem, QuoteRequestStatus } from '@/lib/db/models/QuoteRequest.model';
@@ -209,19 +209,7 @@ export function QuoteRequestDetailView({ id }: { id: string }) {
                   className="bg-surface shadow-card overflow-hidden rounded-md"
                 >
                   <div className="bg-neutral-tint relative aspect-square overflow-hidden">
-                    {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={itemTitle(item)}
-                        fill
-                        sizes="33vw"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="text-text-secondary font-body flex h-full items-center justify-center text-xs">
-                        No image
-                      </div>
-                    )}
+                    <ImageWrapper src={imageUrl} alt={itemTitle(item)} sizes="33vw" />
                   </div>
                   <div className="p-3">
                     <h3 className="font-display text-text-primary text-sm">{itemTitle(item)}</h3>

@@ -1,9 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 import { Carousel } from '@/components/shared/Carousel';
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import DoorCard from '@/views/doors/DoorCard';
 import LaminateCard from '@/views/laminates/LaminateCard';
 import { CtaBanner } from '@/views/home/sections/CtaBanner';
@@ -68,13 +68,11 @@ export default function HomeView({
 
         {bannerImage ? (
           <div className="bg-neutral-tint shadow-card relative mt-10 aspect-[3/1] w-full overflow-hidden rounded-md">
-            <Image
+            <ImageWrapper
               src={bannerImage.url.full}
               alt={bannerImage.altText}
-              fill
               sizes="100vw"
               priority
-              className="object-cover"
             />
           </div>
         ) : null}
@@ -99,15 +97,12 @@ export default function HomeView({
                   className="group flex flex-col items-center gap-3"
                 >
                   <div className="bg-neutral-tint shadow-card relative h-32 w-32 overflow-hidden rounded-full transition-transform duration-300 group-hover:scale-105 sm:h-36 sm:w-36">
-                    {category.image ? (
-                      <Image
-                        src={category.image.url.thumbnail}
-                        alt={category.image.altText}
-                        fill
-                        sizes="144px"
-                        className="object-cover"
-                      />
-                    ) : null}
+                    <ImageWrapper
+                      src={category.image?.url.thumbnail}
+                      alt={category.image?.altText ?? category.name}
+                      sizes="144px"
+                      emptyLabel=""
+                    />
                   </div>
                   <span className="font-body text-text-primary text-sm font-medium">
                     {category.name}

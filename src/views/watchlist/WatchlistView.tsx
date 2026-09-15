@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useState } from 'react';
 import { Heart, X } from 'lucide-react';
 
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { PageHero } from '@/components/shared/PageHero';
 import { QuoteRequestModal } from '@/components/shared/QuoteRequestModal';
 import { useWatchlist, type WatchlistItem } from '@/hooks/useWatchlist';
@@ -40,19 +40,12 @@ function ItemCard({ item, onRemove }: { item: WatchlistItem; onRemove: () => voi
   const content = (
     <>
       <div className="bg-neutral-tint relative aspect-square overflow-hidden">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={itemTitle(item)}
-            fill
-            sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="text-text-secondary font-body flex h-full items-center justify-center text-xs">
-            No image
-          </div>
-        )}
+        <ImageWrapper
+          src={imageUrl}
+          alt={itemTitle(item)}
+          sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+          className="transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
       <div className="flex flex-col gap-1 p-3">
         <span className="text-brand text-badge font-medium tracking-wider uppercase">

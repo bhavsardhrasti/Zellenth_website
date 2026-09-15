@@ -1,10 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import { ZoomIn } from 'lucide-react';
 import { useState } from 'react';
 
 import { ImageLightbox } from '@/components/shared/ImageLightbox';
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { cn } from '@/utils/cn';
 
 interface GalleryImage {
@@ -51,16 +51,12 @@ export function ImageGallery({
           aspectClass,
         )}
       >
-        {activeImage ? (
-          <Image
-            src={activeImage.url.full}
-            alt={activeImage.altText}
-            fill
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-cover"
-            priority
-          />
-        ) : null}
+        <ImageWrapper
+          src={activeImage?.url.full}
+          alt={activeImage?.altText ?? emptyLabel}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
+        />
         <div className="bg-text-primary/60 text-surface absolute right-3 bottom-3 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs opacity-0 transition-opacity group-hover:opacity-100">
           <ZoomIn aria-hidden className="h-3.5 w-3.5" />
           Zoom
@@ -81,12 +77,10 @@ export function ImageGallery({
                 index === activeIndex ? 'border-brand' : 'border-transparent hover:border-border',
               )}
             >
-              <Image
+              <ImageWrapper
                 src={image.url.thumbnail ?? image.url.full}
                 alt={image.altText}
-                fill
                 sizes="64px"
-                className="object-cover"
               />
             </button>
           ))}

@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { WatchlistButton } from '@/components/shared/WatchlistButton';
 import { ROUTES } from '@/utils/routes';
 import type { DoorDocument } from '@/lib/db/models/Door.model';
@@ -20,19 +20,13 @@ export default function DoorCard({ door, categoryName }: DoorCardProps) {
       className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-all duration-300 hover:-translate-y-1"
     >
       <div className="bg-neutral-tint relative aspect-[4/5] overflow-hidden">
-        {primaryImage ? (
-          <Image
-            src={primaryImage.url.mid}
-            alt={primaryImage.altText}
-            fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="text-text-secondary font-body flex h-full items-center justify-center text-sm">
-            No image yet
-          </div>
-        )}
+        <ImageWrapper
+          src={primaryImage?.url.mid}
+          alt={primaryImage?.altText ?? door.name}
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+          className="transition-transform duration-300 group-hover:scale-105"
+          emptyLabel="No image yet"
+        />
         <WatchlistButton
           type="door"
           slug={door.slug}
