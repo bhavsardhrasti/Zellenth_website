@@ -9,9 +9,12 @@
   --color-text-muted: #927f70;
   --color-border: rgba(76, 42, 23, 0.14);
   --color-border-strong: rgba(76, 42, 23, 0.25);
-  --color-brand: #a86637;
-  --color-brand-hover: #8f552d;
+  --color-brand: #8f552d;
+  --color-brand-hover: #774725;
   --color-brand-tint: #efe0cc;
+  --color-accent-2: #b3462c;
+  --color-accent-2-hover: #963a24;
+  --color-accent-2-tint: #f4ded8;
   --color-action: #351b10;
   --color-action-hover: #241109;
   --color-action-text: #fffdf8;
@@ -72,4 +75,30 @@
   to {
     background-position: 0 -120px;
   }
+}
+
+/* Client-facing palette demo — "Ash & Ember" direction from the palette study.
+   Toggled at runtime via [data-palette] on <html> by PaletteDemoToggle, only
+   rendered behind the ?palette-demo=1 query param. Overrides the same roles
+   theme.css defines above; nothing here is reachable by a normal visitor. */
+:root[data-palette='ash-ember'] {
+  --color-background: #f1efea;
+  --color-surface: #ffffff;
+  --color-surface-warm: #e6e1d5;
+  --color-text-primary: #221f1b;
+  --color-text-secondary: #655f56;
+  --color-text-muted: #8f877a;
+  --color-border: rgba(34, 31, 27, 0.14);
+  --color-border-strong: rgba(34, 31, 27, 0.25);
+  --color-brand: #8a6f4e;
+  --color-brand-hover: #6f5a3e;
+  --color-brand-tint: #ece6d8;
+  --color-accent-2: #c1502f;
+  --color-accent-2-hover: #a43f22;
+  --color-accent-2-tint: #f4ded6;
+  --color-action: #2a2723;
+  --color-action-hover: #1c1a17;
+  --color-action-text: #f8f5ef;
+  --color-neutral-tint: rgba(34, 31, 27, 0.06);
+  --color-shadow-tint: #2a2723;
 }

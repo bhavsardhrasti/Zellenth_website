@@ -42,6 +42,7 @@ export default async function DoorVisualizePage({ params, searchParams }: DoorVi
     id: door._id.toString(),
     name: door.name,
     slug: door.slug,
+    code: door.code,
     images: door.images,
     zones: door.zones,
   };
@@ -49,6 +50,8 @@ export default async function DoorVisualizePage({ params, searchParams }: DoorVi
   const visualizerLaminates = laminates.map((item) => ({
     id: item._id.toString(),
     name: item.name,
+    slug: item.slug,
+    code: item.code,
     images: item.images,
   }));
 

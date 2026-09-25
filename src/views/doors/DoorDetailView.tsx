@@ -1,7 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
+import { ImageGallery } from '@/components/shared/ImageGallery';
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
+import { WatchlistButton } from '@/components/shared/WatchlistButton';
 import LaminateCard from '@/views/laminates/LaminateCard';
 import { DoorEnquireButton } from '@/views/doors/DoorEnquireButton';
 import { ROUTES } from '@/utils/routes';
@@ -19,27 +21,17 @@ export default function DoorDetailView({
   categoryName,
   compatibleLaminates,
 }: DoorDetailViewProps) {
-  const primaryImage = door.images.find((image) => image.isPrimary) ?? door.images[0];
+  const orderedImages = [...door.images].sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary));
 
   return (
     <main className="bg-background min-h-dvh px-6 py-16">
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
-        <div className="bg-neutral-tint shadow-card relative aspect-[4/5] overflow-hidden rounded-md">
-          {primaryImage ? (
-            <Image
-              src={primaryImage.url.full}
-              alt={primaryImage.altText}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="text-text-secondary font-body flex h-full items-center justify-center text-sm">
-              No image yet
-            </div>
-          )}
-        </div>
+      <div className="mx-auto max-w-6xl">
+        <Breadcrumbs
+          items={[{ label: 'Doors', href: ROUTES.DOORS as Route }, { label: door.name }]}
+        />
+      </div>
+      <div className="mx-auto mt-6 grid max-w-6xl gap-10 lg:grid-cols-2">
+        <ImageGallery images={orderedImages} aspectClass="aspect-[4/5]" />
 
         <div className="flex flex-col gap-4">
           {categoryName ? (
@@ -67,6 +59,14 @@ export default function DoorDetailView({
               </Link>
             ) : null}
             <DoorEnquireButton doorId={door._id.toString()} doorName={door.name} />
+            <WatchlistButton
+              type="door"
+              slug={door.slug}
+              name={door.name}
+              code={door.code}
+              imageUrl={orderedImages[0]?.url.thumbnail}
+              variant="inline"
+            />
           </div>
         </div>
       </div>

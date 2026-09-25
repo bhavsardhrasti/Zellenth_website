@@ -31,5 +31,17 @@ export default async function DoorsPage({ searchParams }: DoorsPageProps) {
     categories.map((category) => [category._id.toString(), category.name]),
   );
 
-  return <DoorsListView doors={doors} categoryNames={categoryNames} meta={meta} />;
+  const activeCategories = categories
+    .filter((item) => item.isActive)
+    .map((item) => ({ slug: item.slug, name: item.name }));
+
+  return (
+    <DoorsListView
+      doors={doors}
+      categoryNames={categoryNames}
+      meta={meta}
+      categories={activeCategories}
+      activeCategory={category ?? 'all'}
+    />
+  );
 }

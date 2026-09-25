@@ -1,7 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
+import { ImageGallery } from '@/components/shared/ImageGallery';
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
+import { WatchlistButton } from '@/components/shared/WatchlistButton';
 import DoorCard from '@/views/doors/DoorCard';
 import { LaminateEnquireButton } from '@/views/laminates/LaminateEnquireButton';
 import { ROUTES } from '@/utils/routes';
@@ -14,28 +16,23 @@ export interface LaminateDetailViewProps {
 }
 
 export default function LaminateDetailView({ laminate, compatibleDoors }: LaminateDetailViewProps) {
-  const primaryImage = laminate.images.find((image) => image.isPrimary) ?? laminate.images[0];
+  const orderedImages = [...laminate.images].sort(
+    (a, b) => Number(b.isPrimary) - Number(a.isPrimary),
+  );
   const visualizableDoor = compatibleDoors.find((door) => door.zones.length > 0);
 
   return (
     <main className="bg-background min-h-dvh px-6 py-16">
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
-        <div className="bg-neutral-tint shadow-card relative aspect-square overflow-hidden rounded-md">
-          {primaryImage ? (
-            <Image
-              src={primaryImage.url.full}
-              alt={primaryImage.altText}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="text-text-secondary font-body flex h-full items-center justify-center text-sm">
-              No image yet
-            </div>
-          )}
-        </div>
+      <div className="mx-auto max-w-6xl">
+        <Breadcrumbs
+          items={[
+            { label: 'Laminates', href: ROUTES.LAMINATES as Route },
+            { label: laminate.name },
+          ]}
+        />
+      </div>
+      <div className="mx-auto mt-6 grid max-w-6xl gap-10 lg:grid-cols-2">
+        <ImageGallery images={orderedImages} aspectClass="aspect-square" />
 
         <div className="flex flex-col gap-4">
           <span className="bg-neutral-tint text-text-secondary rounded-pill w-fit px-3 py-1 text-xs font-medium">
@@ -65,6 +62,14 @@ export default function LaminateDetailView({ laminate, compatibleDoors }: Lamina
             <LaminateEnquireButton
               laminateId={laminate._id.toString()}
               laminateName={laminate.name}
+            />
+            <WatchlistButton
+              type="laminate"
+              slug={laminate.slug}
+              name={laminate.name}
+              code={laminate.code}
+              imageUrl={orderedImages[0]?.url.thumbnail}
+              variant="inline"
             />
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { useState } from 'react';
 
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { EnquiryModal } from '@/components/shared/EnquiryModal';
 import { Button } from '@/components/ui/Button';
 import { contactInfo } from '@/lib/data/contact';
@@ -13,7 +14,11 @@ export default function ContactView() {
 
   return (
     <main className="bg-background min-h-dvh">
-      <AnimatedSection className="mx-auto max-w-3xl px-6 pt-16 pb-10 text-center sm:pt-24">
+      <div className="mx-auto max-w-3xl px-6 pt-6 sm:pt-8">
+        <Breadcrumbs items={[{ label: 'Contact' }]} />
+      </div>
+
+      <AnimatedSection immediate className="mx-auto max-w-3xl px-6 pt-6 pb-16 text-center sm:pb-24">
         <span className="text-brand text-badge font-medium tracking-wider uppercase">
           Get in touch
         </span>

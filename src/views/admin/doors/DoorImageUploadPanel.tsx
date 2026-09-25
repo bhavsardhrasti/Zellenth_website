@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Star, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +11,7 @@ import { CheckboxInput } from '@/components/ui/inputs/CheckboxInput';
 import { TextInput } from '@/components/ui/inputs/TextInput';
 import { FileDropzone } from '@/components/ui/FileDropzone';
 import { ConfirmModal } from '@/components/ui/modals/ConfirmModal';
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { apiFetch } from '@/lib/api/client';
 import type { DoorImage } from '@/lib/db/models/Door.model';
 
@@ -132,13 +132,7 @@ export function DoorImageUploadPanel({ doorId }: DoorImageUploadPanelProps) {
           {images.map((image, index) => (
             <div key={index} className="flex flex-col gap-1.5">
               <div className="bg-neutral-tint relative aspect-square overflow-hidden rounded-sm">
-                <Image
-                  src={image.url.thumbnail}
-                  alt={image.altText}
-                  fill
-                  sizes="120px"
-                  className="object-cover"
-                />
+                <ImageWrapper src={image.url.thumbnail} alt={image.altText} sizes="120px" />
               </div>
               <div className="flex items-center justify-between gap-1">
                 {image.isPrimary ? (

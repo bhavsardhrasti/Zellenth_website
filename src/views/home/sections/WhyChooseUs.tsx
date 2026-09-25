@@ -27,11 +27,11 @@ export function WhyChooseUs() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2">
-          {pillars.map((pillar) => (
+        <div className="border-border mt-12 grid gap-8 border-t pt-8 sm:grid-cols-2">
+          {pillars.map((pillar, index) => (
             <div key={pillar.title} className="flex gap-4">
-              <span className="bg-surface text-brand shadow-card flex h-11 w-11 shrink-0 items-center justify-center rounded-full">
-                <pillar.icon aria-hidden className="h-5 w-5" />
+              <span className="font-display text-text-muted text-lg">
+                {String(index + 1).padStart(2, '0')}
               </span>
               <div>
                 <h3 className="font-display text-text-primary text-lg">{pillar.title}</h3>

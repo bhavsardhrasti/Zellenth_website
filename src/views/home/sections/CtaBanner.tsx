@@ -5,8 +5,16 @@ import { contactInfo } from '@/lib/data/contact';
 
 export function CtaBanner() {
   return (
-    <AnimatedSection className="bg-action">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center">
+    <AnimatedSection className="bg-action relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 80% at 50% 0%, rgba(143, 85, 45, 0.35), transparent 70%)',
+        }}
+      />
+      <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-16 text-center">
         <h2 className="font-display text-h1 text-action-text">Get a Free Quote Today</h2>
         <p className="font-body max-w-md text-white/70">
           Talk to our team about your door and laminate requirements. No login required.
