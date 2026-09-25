@@ -52,10 +52,19 @@ export default function LaminatesListView({
             No laminates are available yet. Check back soon.
           </p>
         ) : (
-          <AnimatedSection className="mt-6">
+          <AnimatedSection immediate className="mt-6">
             <CardGrid columns={5}>
               {laminates.map((laminate) => (
-                <LaminateCard key={laminate.slug} laminate={laminate} />
+                <LaminateCard
+                  key={laminate.slug}
+                  laminate={{
+                    slug: laminate.slug,
+                    name: laminate.name,
+                    code: laminate.code,
+                    colorFamily: laminate.colorFamily,
+                    images: laminate.images,
+                  }}
+                />
               ))}
             </CardGrid>
           </AnimatedSection>

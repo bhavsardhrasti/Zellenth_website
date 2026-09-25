@@ -40,7 +40,7 @@ export function InputWrapper({
 }
 
 export const baseFieldClasses =
-  'text-body font-body w-full rounded-sm border bg-surface px-3 py-2 text-text-primary outline-none transition-colors placeholder:text-text-secondary focus:border-brand disabled:cursor-not-allowed disabled:opacity-50';
+  'text-body font-body w-full rounded-sm border bg-surface px-3 py-2 text-text-primary outline-none transition-colors placeholder:text-text-secondary focus:border-brand focus-visible:ring-brand focus-visible:ring-2 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50';
 
 export function fieldBorderClass(hasError?: boolean): string {
   return hasError ? 'border-error-text' : 'border-border';

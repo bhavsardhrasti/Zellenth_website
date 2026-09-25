@@ -11,7 +11,7 @@ export default function AboutView() {
         <Breadcrumbs items={[{ label: 'About' }]} />
       </div>
 
-      <AnimatedSection>
+      <AnimatedSection immediate>
         <div className="mx-auto max-w-3xl px-6 pt-6 pb-16 text-center sm:pb-24">
           <span className="text-brand text-badge font-medium tracking-wider uppercase">
             About Zellenth

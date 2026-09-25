@@ -57,12 +57,17 @@ export default function DoorsListView({
             No doors are available yet. Check back soon.
           </p>
         ) : (
-          <AnimatedSection className="mt-6">
+          <AnimatedSection immediate className="mt-6">
             <CardGrid columns={4}>
               {doors.map((door) => (
                 <DoorCard
                   key={door.slug}
-                  door={door}
+                  door={{
+                    slug: door.slug,
+                    name: door.name,
+                    code: door.code,
+                    images: door.images,
+                  }}
                   categoryName={categoryNames[door.categoryId.toString()]}
                 />
               ))}

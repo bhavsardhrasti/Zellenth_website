@@ -9,7 +9,7 @@ interface LegalPageViewProps {
 export default function LegalPageView({ content }: LegalPageViewProps) {
   return (
     <main className="bg-background min-h-dvh">
-      <AnimatedSection className="mx-auto max-w-3xl px-6 pt-6 pb-16 sm:pt-8 sm:pb-24">
+      <AnimatedSection immediate className="mx-auto max-w-3xl px-6 pt-6 pb-16 sm:pt-8 sm:pb-24">
         <Breadcrumbs items={[{ label: content.title }]} />
         <h1 className="font-display text-h1 text-text-primary mt-6">{content.title}</h1>
         <p className="font-body text-text-muted mt-2 text-sm">Last updated: {content.updatedOn}</p>

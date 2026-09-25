@@ -18,7 +18,7 @@ export default function ContactView() {
         <Breadcrumbs items={[{ label: 'Contact' }]} />
       </div>
 
-      <AnimatedSection className="mx-auto max-w-3xl px-6 pt-6 pb-10 text-center">
+      <AnimatedSection immediate className="mx-auto max-w-3xl px-6 pt-6 pb-16 text-center sm:pb-24">
         <span className="text-brand text-badge font-medium tracking-wider uppercase">
           Get in touch
         </span>

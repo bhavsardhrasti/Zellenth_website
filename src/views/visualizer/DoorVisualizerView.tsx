@@ -202,6 +202,11 @@ export default function DoorVisualizerView({
             <ZoneCanvas
               ref={canvasHandleRef}
               doorImageUrl={baseImage.url.full}
+              ariaLabel={
+                selectedLaminate
+                  ? `Preview of ${door.name} in ${selectedLaminate.name} laminate`
+                  : `${door.name} door, no laminate selected yet`
+              }
               zones={zones}
               previewZoneId={null}
               previewTextureUrl={textureUrl}

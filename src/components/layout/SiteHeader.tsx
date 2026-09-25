@@ -104,7 +104,7 @@ export function SiteHeader({ doorCategories }: SiteHeaderProps) {
   }
 
   return (
-    <header className="border-border bg-surface/95 sticky top-0 z-30 border-b backdrop-blur-sm">
+    <header className="border-border/60 bg-surface/70 sticky top-0 z-30 border-b backdrop-blur-md supports-[backdrop-filter]:bg-surface/60">
       <div ref={navRef} className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href={ROUTES.HOME as Route} className="flex items-center gap-2">
           <Image
