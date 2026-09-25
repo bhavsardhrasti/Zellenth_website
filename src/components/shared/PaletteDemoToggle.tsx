@@ -17,13 +17,10 @@ const STORAGE_KEY = 'zellenth-palette-demo';
 export function PaletteDemoToggle() {
   const searchParams = useSearchParams();
   const isDemoMode = searchParams.get('palette-demo') === '1';
-  const [palette, setPalette] = useState<Palette>('current');
-
-  useEffect(() => {
-    if (!isDemoMode) return;
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === 'ash-ember') setPalette('ash-ember');
-  }, [isDemoMode]);
+  const [palette, setPalette] = useState<Palette>(() => {
+    if (typeof window === 'undefined') return 'current';
+    return window.localStorage.getItem(STORAGE_KEY) === 'ash-ember' ? 'ash-ember' : 'current';
+  });
 
   useEffect(() => {
     if (!isDemoMode) return;

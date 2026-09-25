@@ -172,9 +172,13 @@ export function ReliefDemoView() {
   const [isLoadingLaminates, setIsLoadingLaminates] = useState(true);
 
   useEffect(() => {
-    apiFetch<{ items: { _id: string; name: string; images: { url: { mid: string }; isPrimary: boolean }[] }[] }>(
-      '/api/laminates?limit=12',
-    )
+    apiFetch<{
+      items: {
+        _id: string;
+        name: string;
+        images: { url: { mid: string }; isPrimary: boolean }[];
+      }[];
+    }>('/api/laminates?limit=12')
       .then((response) => {
         if (!response.success || !response.data) return;
         const options = response.data.items
@@ -256,14 +260,15 @@ export function ReliefDemoView() {
         renderShadingAndResult(lightAngle);
       })
       .catch(() => {
-        setLoadError('Real design files not found in public/relief-demo-local/. Showing the synthetic design.');
+        setLoadError(
+          'Real design files not found in public/relief-demo-local/. Showing the synthetic design.',
+        );
         setDesign('synthetic');
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- re-run only when the design selection changes
   }, [design]);
 
   useEffect(() => {
-    setLoadError(null);
     if (selectedLaminateId === BUILTIN_WOOD_ID) {
       laminateImageRef.current = createProceduralWood(256);
       renderShadingAndResult(lightAngle);
@@ -280,7 +285,9 @@ export function ReliefDemoView() {
       renderShadingAndResult(lightAngle);
     };
     image.onerror = () => {
-      setLoadError(`Could not load the texture for "${selected.name}". Showing the previous texture.`);
+      setLoadError(
+        `Could not load the texture for "${selected.name}". Showing the previous texture.`,
+      );
     };
     image.src = selected.textureUrl;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- re-run only when the laminate selection changes
@@ -304,7 +311,10 @@ export function ReliefDemoView() {
             placeholder={isLoadingLaminates ? 'Loading...' : 'Select a laminate...'}
             isDisabled={isLoadingLaminates}
             value={selectedLaminateId}
-            onChange={(value) => setSelectedLaminateId(value ?? '')}
+            onChange={(value) => {
+              setSelectedLaminateId(value ?? '');
+              setLoadError(null);
+            }}
             options={[
               { value: BUILTIN_WOOD_ID, label: 'Built-in wood (offline sample)' },
               ...laminates.map((laminate) => ({ value: laminate.id, label: laminate.name })),
