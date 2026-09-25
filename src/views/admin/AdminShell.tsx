@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   DoorClosed,
+  FileText,
   Inbox,
   Layers,
   Menu,
@@ -17,6 +18,7 @@ import {
   X,
 } from 'lucide-react';
 
+import { apiFetch } from '@/lib/api/client';
 import { ROUTES } from '@/utils/routes';
 import { cn } from '@/utils/cn';
 import { UserMenu } from '@/views/admin/UserMenu';
@@ -27,6 +29,7 @@ const NAV_ITEMS = [
   { label: 'Doors', href: ROUTES.ADMIN_DOORS, icon: DoorClosed },
   { label: 'Laminates', href: ROUTES.ADMIN_LAMINATES, icon: Layers },
   { label: 'Enquiries', href: ROUTES.ADMIN_ENQUIRIES, icon: Inbox },
+  { label: 'Quote Requests', href: ROUTES.ADMIN_QUOTE_REQUESTS, icon: FileText },
 ];
 
 interface AdminShellProps {
@@ -39,10 +42,25 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [newQuoteRequestCount, setNewQuoteRequestCount] = useState(0);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- close the mobile drawer whenever the route changes
     setIsMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+    apiFetch<{ meta: { total: number } }>('/api/quote-requests?status=new&limit=1')
+      .then((response) => {
+        if (!cancelled && response.success && response.data) {
+          setNewQuoteRequestCount(response.data.meta.total);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, [pathname]);
 
   return (
@@ -100,7 +118,17 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
                 )}
               >
                 <Icon aria-hidden className="h-4.5 w-4.5 shrink-0" />
-                <span className={cn(isCollapsed && 'lg:hidden')}>{item.label}</span>
+                <span className={cn('flex-1', isCollapsed && 'lg:hidden')}>{item.label}</span>
+                {item.href === ROUTES.ADMIN_QUOTE_REQUESTS && newQuoteRequestCount > 0 ? (
+                  <span
+                    className={cn(
+                      'bg-error-text rounded-pill text-badge flex h-5 min-w-5 items-center justify-center px-1.5 font-medium text-white',
+                      isCollapsed && 'lg:hidden',
+                    )}
+                  >
+                    {newQuoteRequestCount}
+                  </span>
+                ) : null}
               </Link>
             );
           })}

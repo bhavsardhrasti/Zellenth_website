@@ -2,12 +2,15 @@
 
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowLeft, MessageCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, Heart, Sparkles } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/inputs/Select';
-import { EnquiryModal } from '@/components/shared/EnquiryModal';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
+import { apiFetch } from '@/lib/api/client';
+import { useWatchlist } from '@/hooks/useWatchlist';
 import { ROUTES } from '@/utils/routes';
 import { ZoneCanvas, type ZoneCanvasHandle } from '@/views/admin/doors/zone-editor/ZoneCanvas';
 import { ZonePreviewModal } from '@/views/admin/doors/zone-editor/ZonePreviewModal';
@@ -17,6 +20,7 @@ export interface VisualizerDoor {
   id: string;
   name: string;
   slug: string;
+  code: string;
   images: { url: { full: string }; isPrimary: boolean }[];
   zones: DoorZone[];
 }
@@ -24,6 +28,8 @@ export interface VisualizerDoor {
 export interface VisualizerLaminate {
   id: string;
   name: string;
+  slug: string;
+  code: string;
   images: { url: { mid: string }; isPrimary: boolean }[];
 }
 
@@ -46,7 +52,8 @@ export default function DoorVisualizerView({
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [snapshot, setSnapshot] = useState<string | null>(null);
   const [zones, setZones] = useState<DoorZone[]>([]);
-  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+  const [isAddingToWatchlist, setIsAddingToWatchlist] = useState(false);
+  const { isSaved, toggle } = useWatchlist();
 
   const baseImage = door.images.find((image) => image.isPrimary) ?? door.images[0];
 
@@ -85,6 +92,55 @@ export default function DoorVisualizerView({
     const result = await canvasHandleRef.current?.captureLaminatedSnapshot(textureUrl);
     setSnapshot(result ?? null);
     setIsPreviewLoading(false);
+  }
+
+  const doorRef = {
+    slug: door.slug,
+    name: door.name,
+    code: door.code,
+    imageUrl: baseImage?.url.full,
+  };
+  const laminateRef = selectedLaminate
+    ? {
+        slug: selectedLaminate.slug,
+        name: selectedLaminate.name,
+        code: selectedLaminate.code,
+        imageUrl: (
+          selectedLaminate.images.find((image) => image.isPrimary) ?? selectedLaminate.images[0]
+        )?.url.mid,
+      }
+    : undefined;
+
+  const combinationSaved = laminateRef ? isSaved(doorRef, laminateRef) : false;
+
+  async function handleAddToWatchlist() {
+    if (!laminateRef || !textureUrl) return;
+
+    if (combinationSaved) {
+      toggle({ door: doorRef, laminate: laminateRef });
+      return;
+    }
+
+    setIsAddingToWatchlist(true);
+    try {
+      const snapshotDataUrl = await canvasHandleRef.current?.captureLaminatedSnapshot(textureUrl);
+      let comboSnapshotUrl: string | undefined;
+      if (snapshotDataUrl) {
+        const response = await apiFetch<{ url: string }>('/api/watchlist/snapshot', {
+          method: 'POST',
+          body: JSON.stringify({ dataUrl: snapshotDataUrl }),
+        });
+        if (response.success && response.data) {
+          comboSnapshotUrl = response.data.url;
+        }
+      }
+      toggle({ door: doorRef, laminate: laminateRef, comboSnapshotUrl });
+      toast.success('Added to watchlist');
+    } catch {
+      toast.error('Could not add to watchlist. Please try again.');
+    } finally {
+      setIsAddingToWatchlist(false);
+    }
   }
 
   return (
@@ -128,12 +184,13 @@ export default function DoorVisualizerView({
               Full-screen
             </Button>
             <Button
-              icon={MessageCircle}
-              disabled={!selectedLaminate}
-              onClick={() => setIsEnquiryOpen(true)}
+              icon={Heart}
+              disabled={!selectedLaminate || isAddingToWatchlist}
+              isLoading={isAddingToWatchlist}
+              onClick={handleAddToWatchlist}
               className="whitespace-nowrap"
             >
-              Enquire
+              {combinationSaved ? 'Saved to Watchlist' : 'Add to Watchlist'}
             </Button>
           </div>
         </div>
@@ -145,6 +202,11 @@ export default function DoorVisualizerView({
             <ZoneCanvas
               ref={canvasHandleRef}
               doorImageUrl={baseImage.url.full}
+              ariaLabel={
+                selectedLaminate
+                  ? `Preview of ${door.name} in ${selectedLaminate.name} laminate`
+                  : `${door.name} door, no laminate selected yet`
+              }
               zones={zones}
               previewZoneId={null}
               previewTextureUrl={textureUrl}
@@ -168,15 +230,7 @@ export default function DoorVisualizerView({
         isLoading={isPreviewLoading}
       />
 
-      <EnquiryModal
-        isOpen={isEnquiryOpen}
-        onClose={() => setIsEnquiryOpen(false)}
-        source="visualizer"
-        doorId={door.id}
-        doorName={door.name}
-        laminateId={selectedLaminate?.id}
-        laminateName={selectedLaminate?.name}
-      />
+      <WhatsAppButton />
     </main>
   );
 }

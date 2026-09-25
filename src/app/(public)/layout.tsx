@@ -1,7 +1,9 @@
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
+import { PaletteDemoToggle } from '@/components/shared/PaletteDemoToggle';
+import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { listDoorCategories } from '@/lib/services/door-category.service';
 
 export default async function PublicLayout({ children }: { children: ReactNode }) {
@@ -15,6 +17,10 @@ export default async function PublicLayout({ children }: { children: ReactNode }
       <SiteHeader doorCategories={doorCategories} />
       <div className="flex-1">{children}</div>
       <SiteFooter />
+      <WhatsAppButton />
+      <Suspense fallback={null}>
+        <PaletteDemoToggle />
+      </Suspense>
     </div>
   );
 }

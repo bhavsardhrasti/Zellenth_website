@@ -21,5 +21,5 @@ export default async function LaminatesPage({ searchParams }: LaminatesPageProps
 
   const { items: laminates, meta } = await listLaminates(query);
 
-  return <LaminatesListView laminates={laminates} meta={meta} />;
+  return <LaminatesListView laminates={laminates} meta={meta} activeFinish={finish ?? 'all'} />;
 }

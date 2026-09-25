@@ -36,6 +36,8 @@ interface ZoneCanvasProps {
   previewAllZones?: boolean;
   /** Whether zones with no active preview still render their idle outline/fill (admin editor) or stay invisible (visualizer). */
   showIdleZones?: boolean;
+  /** Accessible name for the canvas — the visualizer passes a description of what's being previewed; the admin editor has no equivalent and omits it. */
+  ariaLabel?: string;
 }
 
 export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function ZoneCanvas(
@@ -50,6 +52,7 @@ export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function
     onPointAdded,
     previewAllZones = false,
     showIdleZones = true,
+    ariaLabel,
   },
   ref,
 ) {
@@ -305,7 +308,12 @@ export const ZoneCanvas = forwardRef<ZoneCanvasHandle, ZoneCanvasProps>(function
             className="pointer-events-none absolute inset-0 h-full w-full select-none"
             draggable={false}
           />
-          <canvas ref={canvasElRef} className="relative" />
+          <canvas
+            ref={canvasElRef}
+            role={ariaLabel ? 'img' : undefined}
+            aria-label={ariaLabel}
+            className="relative"
+          />
         </div>
       </div>
     </div>

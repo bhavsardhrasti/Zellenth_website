@@ -8,6 +8,7 @@ export const ROUTES = {
   LAMINATES: '/laminates',
   LAMINATES_ID: (id: string) => `/laminates/${id}`,
   WATCHLIST: '/watchlist',
+  QUOTE_VIEW: (referenceId: string) => `/quote/${referenceId}`,
   ABOUT: '/about',
   CONTACT: '/contact',
   FAQ: '/faq',
@@ -25,4 +26,6 @@ export const ROUTES = {
   ADMIN_LAMINATES_NEW: '/admin/laminates/new',
   ADMIN_LAMINATES_ID: (id: string) => `/admin/laminates/${id}`,
   ADMIN_ENQUIRIES: '/admin/enquiries',
+  ADMIN_QUOTE_REQUESTS: '/admin/quote-requests',
+  ADMIN_QUOTE_REQUESTS_ID: (id: string) => `/admin/quote-requests/${id}`,
 };

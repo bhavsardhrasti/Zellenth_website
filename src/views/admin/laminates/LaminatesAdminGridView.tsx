@@ -1,7 +1,6 @@
 'use client';
 
 import { Pencil, Plus, Search } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -24,6 +23,7 @@ import {
 } from '@/components/ui/Table';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorBanner } from '@/components/shared/ErrorBanner';
+import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { TableSkeleton } from '@/components/shared/Skeleton';
 import { useApiList } from '@/hooks/useApiList';
@@ -189,15 +189,11 @@ export function LaminatesAdminGridView() {
                 <TableRow key={laminate._id}>
                   <TableCell>
                     <div className="bg-neutral-tint relative h-12 w-12 overflow-hidden rounded-sm">
-                      {primaryImage && (
-                        <Image
-                          src={primaryImage.url.thumbnail}
-                          alt={primaryImage.altText}
-                          fill
-                          sizes="48px"
-                          className="object-cover"
-                        />
-                      )}
+                      <ImageWrapper
+                        src={primaryImage?.url.thumbnail}
+                        alt={primaryImage?.altText ?? laminate.name}
+                        sizes="48px"
+                      />
                     </div>
                   </TableCell>
                   <TableCell className="text-text-secondary">{laminate.code}</TableCell>

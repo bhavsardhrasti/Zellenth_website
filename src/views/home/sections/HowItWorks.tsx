@@ -14,19 +14,14 @@ export function HowItWorks() {
           </h2>
         </div>
 
-        <div className="relative mt-12 grid gap-10 sm:grid-cols-3">
+        <div className="border-border mt-12 grid gap-8 border-t sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-border">
           {processSteps.map((step) => (
-            <div key={step.step} className="flex flex-col items-center gap-3 text-center">
-              <div className="relative flex h-16 w-16 items-center justify-center">
-                <span className="bg-brand-tint text-brand flex h-16 w-16 items-center justify-center rounded-full">
-                  <step.icon aria-hidden className="h-6 w-6" />
-                </span>
-                <span className="bg-action text-action-text absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold">
-                  {step.step}
-                </span>
-              </div>
+            <div key={step.step} className="flex flex-col gap-2 pt-6 sm:px-8 sm:first:pl-0 sm:last:pr-0">
+              <span className="font-display text-brand text-h1">
+                {String(step.step).padStart(2, '0')}
+              </span>
               <h3 className="font-display text-text-primary text-lg">{step.title}</h3>
-              <p className="font-body text-text-secondary max-w-xs text-sm">{step.description}</p>
+              <p className="font-body text-text-secondary text-sm">{step.description}</p>
             </div>
           ))}
         </div>

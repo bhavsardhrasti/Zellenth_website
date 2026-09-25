@@ -27,6 +27,7 @@ const serverEnvSchema = z.object({
 
   EMAIL_API_KEY: optionalString,
   EMAIL_FROM: optionalString,
+  ADMIN_NOTIFICATION_EMAIL: optionalString,
 
   RECAPTCHA_SECRET_KEY: optionalString,
 
