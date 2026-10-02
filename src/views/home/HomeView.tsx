@@ -1,18 +1,12 @@
-import Link from 'next/link';
-import type { Route } from 'next';
-
-import { AnimatedSection } from '@/components/shared/AnimatedSection';
-import { Carousel } from '@/components/shared/Carousel';
-import DoorCard from '@/views/doors/DoorCard';
-import LaminateCard from '@/views/laminates/LaminateCard';
 import { CarouselHero } from '@/views/home/sections/CarouselHero';
 import { CategoryGrid } from '@/views/home/sections/CategoryGrid';
 import { CtaBanner } from '@/views/home/sections/CtaBanner';
+import { FeaturedDoors } from '@/views/home/sections/FeaturedDoors';
 import { HowItWorks } from '@/views/home/sections/HowItWorks';
+import { LaminateWall } from '@/views/home/sections/LaminateWall';
 import { ScrollChoreographyHero } from '@/views/home/sections/ScrollChoreographyHero';
 import { TrustBadgeRow } from '@/views/home/sections/TrustBadgeRow';
 import { WhyChooseUs } from '@/views/home/sections/WhyChooseUs';
-import { ROUTES } from '@/utils/routes';
 import type { DoorImage } from '@/lib/db/models/Door.model';
 import type { DoorDocument } from '@/lib/db/models/Door.model';
 import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
@@ -47,82 +41,13 @@ export default function HomeView({
       <TrustBadgeRow />
       <HowItWorks />
 
-      {/* Shop by category */}
       {categories.length > 0 ? <CategoryGrid categories={categories} /> : null}
 
-      {/* Featured doors */}
       {featuredDoors.length > 0 ? (
-        <AnimatedSection className="bg-background">
-          <div className="mx-auto max-w-6xl px-6 py-16">
-            <div className="flex items-end justify-between">
-              <div>
-                <h2 className="font-display text-h2 text-text-primary">Featured Doors</h2>
-                <p className="font-body text-text-secondary mt-2">
-                  Our latest additions to the catalogue.
-                </p>
-              </div>
-              <Link
-                href={ROUTES.DOORS as Route}
-                className="text-brand font-body text-sm font-medium"
-              >
-                View all
-              </Link>
-            </div>
-            <div className="mt-10">
-              <Carousel label="Featured doors">
-                {featuredDoors.map((door) => (
-                  <DoorCard
-                    key={door.slug}
-                    door={{
-                      slug: door.slug,
-                      name: door.name,
-                      code: door.code,
-                      images: door.images,
-                    }}
-                    categoryName={categoryNames[door.categoryId.toString()]}
-                  />
-                ))}
-              </Carousel>
-            </div>
-          </div>
-        </AnimatedSection>
+        <FeaturedDoors doors={featuredDoors} categoryNames={categoryNames} />
       ) : null}
 
-      {/* Featured laminates */}
-      {featuredLaminates.length > 0 ? (
-        <AnimatedSection className="bg-surface">
-          <div className="mx-auto max-w-6xl px-6 py-16">
-            <div className="flex items-end justify-between">
-              <div>
-                <h2 className="font-display text-h2 text-text-primary">Explore Laminates</h2>
-                <p className="font-body text-text-secondary mt-2">
-                  Textures and finishes ready to try on any door.
-                </p>
-              </div>
-              <Link
-                href={ROUTES.LAMINATES as Route}
-                className="text-brand font-body text-sm font-medium"
-              >
-                View all
-              </Link>
-            </div>
-            <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {featuredLaminates.map((laminate) => (
-                <LaminateCard
-                  key={laminate.slug}
-                  laminate={{
-                    slug: laminate.slug,
-                    name: laminate.name,
-                    code: laminate.code,
-                    colorFamily: laminate.colorFamily,
-                    images: laminate.images,
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </AnimatedSection>
-      ) : null}
+      {featuredLaminates.length > 0 ? <LaminateWall laminates={featuredLaminates} /> : null}
 
       <WhyChooseUs />
       <CtaBanner />
