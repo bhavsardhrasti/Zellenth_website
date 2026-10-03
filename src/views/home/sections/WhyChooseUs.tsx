@@ -1,19 +1,10 @@
 'use client';
 
-import { animate, motion, useInView, useReducedMotion, type Variants } from 'motion/react';
+import { animate, useInView, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
+import { MaskedHeading, MicroLabel } from '@/components/ui/editorial';
 import { pillars, stats } from '@/lib/data/why-choose';
-
-const container: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' } },
-};
 
 // "500+" -> counts 0..500 then keeps the "+" suffix.
 function CountUp({ value }: { value: string }) {
@@ -42,55 +33,52 @@ function CountUp({ value }: { value: string }) {
   );
 }
 
-// Light warm band — the CTA after it is the only dark band before the
-// footer, so the two never run together.
+// Light editorial spread: oversized counted figures divided by hairlines,
+// then the pillars as numbered rows — no tiles, icons or cards.
 export function WhyChooseUs() {
-  const reduced = useReducedMotion();
-
   return (
-    <section className="bg-surface-warm">
-      <div className="mx-auto max-w-6xl px-6 py-20">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            <span className="text-brand text-badge font-medium tracking-wider uppercase">
-              Why choose us
-            </span>
-            <h2 className="font-display text-h2 text-text-primary mt-3">
-              Manufactured in-house, built for real conditions
-            </h2>
-            <p className="font-body text-text-secondary mt-4 max-w-md">
-              We&apos;re not a reseller. Every door that leaves our Ahmedabad factory is made,
-              treated, and finished by our own team.
-            </p>
-          </div>
+    <section className="bg-surface-warm px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        <MicroLabel className="text-brand">Why choose us</MicroLabel>
+        <MaskedHeading
+          lines={['Made in-house,', 'built for Gujarat.']}
+          className="text-text-primary mt-4 text-4xl sm:text-6xl"
+        />
+        <p className="font-body text-text-secondary mt-6 max-w-md">
+          We&apos;re not a reseller. Every door that leaves our Ahmedabad factory is made, treated,
+          and finished by our own team.
+        </p>
 
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-md bg-border lg:col-span-7">
-            {stats.map((stat) => (
-              <div key={stat.label} className="bg-surface flex flex-col gap-1 p-6 sm:p-8">
-                <span className="font-display text-brand text-4xl sm:text-5xl">
-                  <CountUp value={stat.value} />
-                </span>
-                <span className="font-body text-text-secondary text-sm">{stat.label}</span>
-              </div>
-            ))}
-          </div>
+        <div className="border-border mt-14 grid grid-cols-2 border-t lg:grid-cols-4 lg:divide-x lg:divide-border">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="border-border flex flex-col gap-2 border-b px-0 py-8 lg:border-b-0 lg:px-6 lg:first:pl-0"
+            >
+              <span className="font-display text-brand text-5xl leading-none sm:text-6xl">
+                <CountUp value={stat.value} />
+              </span>
+              <MicroLabel className="text-text-secondary">{stat.label}</MicroLabel>
+            </div>
+          ))}
         </div>
 
-        <motion.div
-          initial={reduced ? false : 'hidden'}
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={container}
-          className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {pillars.map((pillar) => (
-            <motion.div key={pillar.title} variants={item} className="border-border border-t pt-5">
-              <pillar.icon aria-hidden className="text-brand h-6 w-6" strokeWidth={1.5} />
-              <h3 className="font-display text-text-primary mt-4 text-lg">{pillar.title}</h3>
-              <p className="font-body text-text-secondary mt-2 text-sm">{pillar.body}</p>
-            </motion.div>
+        <ol className="border-border divide-border mt-4 divide-y border-y">
+          {pillars.map((pillar, index) => (
+            <li
+              key={pillar.title}
+              className="grid gap-2 py-6 sm:grid-cols-12 sm:items-baseline sm:gap-6"
+            >
+              <MicroLabel className="text-brand tabular-nums sm:col-span-1">
+                {String(index + 1).padStart(2, '0')}
+              </MicroLabel>
+              <h3 className="font-display text-text-primary text-2xl leading-tight sm:col-span-5">
+                {pillar.title}
+              </h3>
+              <p className="font-body text-text-secondary text-sm sm:col-span-6">{pillar.body}</p>
+            </li>
           ))}
-        </motion.div>
+        </ol>
       </div>
     </section>
   );

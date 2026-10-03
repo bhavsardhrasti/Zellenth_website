@@ -14,10 +14,7 @@ export default function LaminateCard({ laminate }: LaminateCardProps) {
   const primaryImage = laminate.images.find((image) => image.isPrimary) ?? laminate.images[0];
 
   return (
-    <Link
-      href={ROUTES.LAMINATES_ID(laminate.slug) as Route}
-      className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-all duration-300 hover:-translate-y-1"
-    >
+    <Link href={ROUTES.LAMINATES_ID(laminate.slug) as Route} className="group block">
       <div className="bg-neutral-tint relative aspect-square overflow-hidden">
         <ImageWrapper
           src={primaryImage?.url.thumbnail}
@@ -34,13 +31,14 @@ export default function LaminateCard({ laminate }: LaminateCardProps) {
           imageUrl={primaryImage?.url.thumbnail}
         />
       </div>
-      <div className="flex flex-col gap-1.5 p-3">
-        <span className="text-brand text-badge font-medium tracking-wider uppercase">
+      <div className="border-border group-hover:border-brand mt-3 flex flex-col gap-1 border-t pt-3 transition-colors duration-300">
+        <span className="text-brand font-body text-[11px] font-medium tracking-[0.14em] uppercase">
           {laminate.colorFamily}
         </span>
-        <h3 className="font-display text-text-primary text-sm">{laminate.name}</h3>
-        <span className="font-body text-text-secondary text-xs">{laminate.code}</span>
-        <span className="bg-border group-hover:bg-brand mt-1 h-px w-6 transition-all duration-300 group-hover:w-full" />
+        <h3 className="font-display text-text-primary text-sm leading-tight">{laminate.name}</h3>
+        <span className="font-body text-text-secondary text-[11px] tracking-[0.14em] uppercase">
+          {laminate.code}
+        </span>
       </div>
     </Link>
   );

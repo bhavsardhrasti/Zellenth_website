@@ -1,79 +1,107 @@
+'use client';
+
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 
-import { AnimatedSection } from '@/components/shared/AnimatedSection';
-import { ImageWrapper } from '@/components/shared/ImageWrapper';
-import { WatchlistButton } from '@/components/shared/WatchlistButton';
+import { Grain, MaskedHeading, MicroLabel } from '@/components/ui/editorial';
 import { ROUTES } from '@/utils/routes';
-import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
 
-// A swatch wall, not a card grid: the texture is the whole tile, with name
-// and finish revealed on hover (always visible on touch via the caption
-// strip) — the way you'd actually browse physical laminate samples.
-export function LaminateWall({ laminates }: { laminates: LaminateDocument[] }) {
+export interface LaminateSample {
+  slug: string;
+  name: string;
+  code: string;
+  colorFamily: string;
+  image: string | undefined;
+}
+
+// A physical sample fan-deck: strips hang from a single pivot edge and splay
+// apart; the one you point at swings straight and lifts clear of the others.
+// Real textures stay ungraded so finishes are shown true.
+export function LaminateWall({ samples }: { samples: LaminateSample[] }) {
+  const [active, setActive] = useState(Math.floor(samples.length / 2));
+  const current = samples[active];
+  if (!current) return null;
+  const mid = (samples.length - 1) / 2;
+
   return (
-    <AnimatedSection className="bg-surface">
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <div className="flex items-end justify-between">
+    <section className="bg-action relative isolate overflow-hidden px-6 py-20 text-white">
+      <Grain />
+      <div className="relative mx-auto max-w-6xl">
+        <div className="flex items-end justify-between gap-6">
           <div>
-            <h2 className="font-display text-h2 text-text-primary">Explore Laminates</h2>
-            <p className="font-body text-text-secondary mt-2">
-              Textures and finishes ready to try on any door.
-            </p>
+            <MicroLabel className="text-white/60">Laminate library</MicroLabel>
+            <MaskedHeading
+              lines={['Every finish,', 'on your door.']}
+              className="mt-4 text-4xl sm:text-6xl"
+            />
           </div>
           <Link
             href={ROUTES.LAMINATES as Route}
-            className="text-brand font-body text-sm font-medium"
+            className="font-body shrink-0 text-xs font-medium tracking-[0.14em] uppercase underline underline-offset-8 transition-opacity hover:opacity-60"
           >
-            View all
+            View all →
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5">
-          {laminates.map((laminate) => {
-            const image = laminate.images.find((item) => item.isPrimary) ?? laminate.images[0];
+        <div className="relative mt-14 flex h-[420px] justify-center overflow-hidden pt-4">
+          <div aria-hidden className="absolute top-4 right-0 left-0 h-px bg-white/25" />
+          {samples.map((sample, i) => {
+            const isActive = i === active;
+            const angle = isActive ? 0 : (i - mid) * 5.5;
             return (
-              <Link
-                key={laminate.slug}
-                href={ROUTES.LAMINATES_ID(laminate.slug) as Route}
-                className="group relative block aspect-square overflow-hidden rounded-md"
+              <motion.div
+                key={sample.slug}
+                className={`-ml-12 first:ml-0 w-24 shrink-0 origin-top sm:-ml-10 sm:w-28 ${i >= 5 ? 'hidden sm:block' : ''}`}
+                style={{ zIndex: isActive ? 20 : 10 - Math.abs(i - active) }}
+                animate={{ rotate: angle, y: isActive ? 12 : 0 }}
+                transition={{ type: 'spring', stiffness: 170, damping: 20 }}
               >
-                <ImageWrapper
-                  src={image?.url.thumbnail}
-                  alt={image?.altText ?? laminate.name}
-                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
-                  className="transition-transform duration-500 group-hover:scale-110"
-                  emptyLabel="No image yet"
-                />
-                <WatchlistButton
-                  type="laminate"
-                  slug={laminate.slug}
-                  name={laminate.name}
-                  code={laminate.code}
-                  imageUrl={image?.url.thumbnail}
-                />
-                <div className="absolute inset-x-0 bottom-0 translate-y-1 bg-gradient-to-t from-black/70 to-transparent px-3 pt-8 pb-3 opacity-100 transition-all duration-300 sm:translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-visible:translate-y-0 sm:group-focus-visible:opacity-100">
-                  <span className="block text-[10px] font-semibold tracking-[0.2em] text-white/70 uppercase">
-                    {laminate.colorFamily}
-                  </span>
-                  <span className="font-display block text-sm text-white">{laminate.name}</span>
-                </div>
-              </Link>
+                <Link
+                  href={ROUTES.LAMINATES_ID(sample.slug) as Route}
+                  onMouseEnter={() => setActive(i)}
+                  onFocus={() => setActive(i)}
+                  aria-label={sample.name}
+                  className="relative block h-[360px] w-full overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                >
+                  {sample.image ? (
+                    <img src={sample.image} alt="" className="h-full w-full object-cover" />
+                  ) : null}
+                  <span
+                    aria-hidden
+                    className="bg-action absolute top-3 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full ring-1 ring-white/30"
+                  />
+                </Link>
+              </motion.div>
             );
           })}
         </div>
 
-        <div className="mt-6 flex justify-center">
+        <div className="flex flex-wrap items-end justify-between gap-6 border-t border-white/20 pt-6">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={current.slug}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MicroLabel className="text-white/60">{current.colorFamily}</MicroLabel>
+              <h3 className="font-display mt-1 text-3xl leading-tight sm:text-4xl">
+                {current.name}
+              </h3>
+              <MicroLabel className="mt-1 block text-white/60">{current.code}</MicroLabel>
+            </motion.div>
+          </AnimatePresence>
           <Link
-            href={ROUTES.LAMINATES as Route}
-            className="text-text-primary hover:text-brand font-body inline-flex items-center gap-2 text-sm font-medium transition-colors"
+            href={ROUTES.LAMINATES_ID(current.slug) as Route}
+            className="bg-surface text-text-primary hover:bg-surface-warm px-6 py-3 text-sm font-medium transition-colors"
           >
-            See every finish
-            <ArrowRight aria-hidden className="h-4 w-4" />
+            View finish
           </Link>
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   );
 }

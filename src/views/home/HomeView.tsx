@@ -31,23 +31,42 @@ export default function HomeView({
   categoryNames,
   featuredLaminates,
 }: HomeViewProps) {
+  // Both showcases are client components, so hand them plain objects rather
+  // than Mongoose documents (ObjectId fields can't cross the boundary).
+  const doorsForShowcase = featuredDoors.slice(0, 6).map((door) => {
+    const image = door.images.find((item) => item.isPrimary) ?? door.images[0];
+    return {
+      slug: door.slug,
+      name: door.name,
+      code: door.code,
+      category: categoryNames[door.categoryId.toString()],
+      image: image?.url.full,
+    };
+  });
+  const lamsForShowcase = featuredLaminates.slice(0, 8).map((laminate) => {
+    const image = laminate.images.find((item) => item.isPrimary) ?? laminate.images[0];
+    return {
+      slug: laminate.slug,
+      name: laminate.name,
+      code: laminate.code,
+      colorFamily: laminate.colorFamily,
+      image: image?.url.mid,
+    };
+  });
+
   return (
     <main className="bg-background min-h-dvh">
       <CarouselHero />
 
-      {/* Showcase moment — real motion, not the primary hero. */}
-      <ScrollChoreographyHero />
-
       <TrustBadgeRow />
+      <ScrollChoreographyHero />
       <HowItWorks />
+
+      {featuredDoors.length > 0 ? <FeaturedDoors doors={doorsForShowcase} /> : null}
 
       {categories.length > 0 ? <CategoryGrid categories={categories} /> : null}
 
-      {featuredDoors.length > 0 ? (
-        <FeaturedDoors doors={featuredDoors} categoryNames={categoryNames} />
-      ) : null}
-
-      {featuredLaminates.length > 0 ? <LaminateWall laminates={featuredLaminates} /> : null}
+      {featuredLaminates.length > 0 ? <LaminateWall samples={lamsForShowcase} /> : null}
 
       <WhyChooseUs />
       <CtaBanner />

@@ -15,10 +15,7 @@ export default function DoorCard({ door, categoryName }: DoorCardProps) {
   const primaryImage = door.images.find((image) => image.isPrimary) ?? door.images[0];
 
   return (
-    <Link
-      href={ROUTES.DOORS_ID(door.slug) as Route}
-      className="bg-surface shadow-card hover:shadow-elevated group block overflow-hidden rounded-md transition-all duration-300 hover:-translate-y-1"
-    >
+    <Link href={ROUTES.DOORS_ID(door.slug) as Route} className="group block">
       <div className="bg-neutral-tint relative aspect-[4/5] overflow-hidden">
         <ImageWrapper
           src={primaryImage?.url.mid}
@@ -35,15 +32,16 @@ export default function DoorCard({ door, categoryName }: DoorCardProps) {
           imageUrl={primaryImage?.url.thumbnail}
         />
       </div>
-      <div className="flex flex-col gap-1.5 p-4">
+      <div className="border-border group-hover:border-brand mt-3 flex flex-col gap-1 border-t pt-3 transition-colors duration-300">
         {categoryName ? (
-          <span className="text-brand text-badge font-medium tracking-wider uppercase">
+          <span className="text-brand font-body text-[11px] font-medium tracking-[0.14em] uppercase">
             {categoryName}
           </span>
         ) : null}
-        <h3 className="font-display text-text-primary text-lg">{door.name}</h3>
-        <span className="font-body text-text-secondary text-sm">{door.code}</span>
-        <span className="bg-border group-hover:bg-brand mt-1 h-px w-8 transition-all duration-300 group-hover:w-full" />
+        <h3 className="font-display text-text-primary text-lg leading-tight">{door.name}</h3>
+        <span className="font-body text-text-secondary text-[11px] tracking-[0.14em] uppercase">
+          {door.code}
+        </span>
       </div>
     </Link>
   );

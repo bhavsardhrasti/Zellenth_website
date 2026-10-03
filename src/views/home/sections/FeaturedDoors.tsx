@@ -1,86 +1,146 @@
+'use client';
+
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 
-import { AnimatedSection } from '@/components/shared/AnimatedSection';
-import { ImageWrapper } from '@/components/shared/ImageWrapper';
-import DoorCard from '@/views/doors/DoorCard';
+import { Grain, MaskedHeading, MicroLabel } from '@/components/ui/editorial';
 import { ROUTES } from '@/utils/routes';
-import type { DoorDocument } from '@/lib/db/models/Door.model';
 
-interface FeaturedDoorsProps {
-  doors: DoorDocument[];
-  categoryNames: Record<string, string>;
+export interface FeaturedDoor {
+  slug: string;
+  name: string;
+  code: string;
+  category: string | undefined;
+  image: string | undefined;
 }
 
-// One lead door shown large with a direct "try it" action, the next four as
-// regular cards beside it — so the newest door gets real presence instead of
-// every door being an identical tile in a scroller.
-export function FeaturedDoors({ doors, categoryNames }: FeaturedDoorsProps) {
-  const [lead, ...rest] = doors;
-  if (!lead) return null;
+const CARD_FULL = 400;
+const CARD_REST = 250;
 
-  const leadImage = lead.images.find((image) => image.isPrimary) ?? lead.images[0];
-  const leadCategory = categoryNames[lead.categoryId.toString()];
+// The hero's filmstrip, applied to the catalogue: cards share one top edge,
+// the focused door unfurls to full height, and a blurred, brand-graded copy
+// of it becomes the ambient backdrop. The cards themselves are the real,
+// ungraded product photos — only the glow behind them takes the hue.
+export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }) {
+  const [active, setActive] = useState(0);
+  const current = doors[active];
+  if (!current) return null;
 
   return (
-    <AnimatedSection className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <div className="flex items-end justify-between">
+    <section className="bg-action relative isolate overflow-hidden px-6 py-20 text-white">
+      <AnimatePresence initial={false}>
+        {current.image ? (
+          <motion.div
+            key={current.slug}
+            aria-hidden
+            className="absolute inset-0 -z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <img
+              src={current.image}
+              alt=""
+              className="h-full w-full scale-125 object-cover opacity-40 blur-3xl"
+            />
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: '#8f552d', mixBlendMode: 'color' }}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+      <div className="from-action/60 to-action absolute inset-0 -z-10 bg-gradient-to-b via-transparent" />
+      <Grain />
+
+      <div className="relative mx-auto max-w-6xl">
+        <div className="flex items-end justify-between gap-6">
           <div>
-            <h2 className="font-display text-h2 text-text-primary">Featured Doors</h2>
-            <p className="font-body text-text-secondary mt-2">
-              Our latest additions to the catalogue.
-            </p>
+            <MicroLabel className="text-white/60">Featured doors</MicroLabel>
+            <MaskedHeading
+              lines={['Latest from', 'the factory.']}
+              className="mt-4 text-4xl sm:text-6xl"
+            />
           </div>
-          <Link href={ROUTES.DOORS as Route} className="text-brand font-body text-sm font-medium">
-            View all
+          <Link
+            href={ROUTES.DOORS as Route}
+            className="font-body shrink-0 text-xs font-medium tracking-[0.14em] uppercase underline underline-offset-8 transition-opacity hover:opacity-60"
+          >
+            View all →
           </Link>
         </div>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-12 lg:gap-6">
-          <Link
-            href={ROUTES.DOORS_ID(lead.slug) as Route}
-            className="group relative block aspect-[4/5] overflow-hidden rounded-md lg:col-span-5 lg:aspect-auto lg:min-h-[560px]"
-          >
-            <ImageWrapper
-              src={leadImage?.url.full}
-              alt={leadImage?.altText ?? lead.name}
-              sizes="(min-width: 1024px) 40vw, 90vw"
-              className="transition-transform duration-700 group-hover:scale-105"
-              emptyLabel="No image yet"
-            />
-            <span
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent"
-            />
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
-              <div>
-                {leadCategory ? (
-                  <span className="text-xs font-semibold tracking-[0.25em] text-white/75 uppercase">
-                    {leadCategory}
-                  </span>
-                ) : null}
-                <h3 className="font-display mt-1 text-2xl text-white">{lead.name}</h3>
-                <span className="font-body text-sm text-white/70">{lead.code}</span>
-              </div>
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/25">
-                <ArrowUpRight aria-hidden className="h-5 w-5 text-white" />
-              </span>
-            </div>
-          </Link>
-
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:col-span-7">
-            {rest.slice(0, 4).map((door) => (
-              <DoorCard
+        <div className="mt-12 flex items-start gap-3 overflow-x-auto pb-2 sm:gap-4">
+          {doors.map((door, i) => {
+            const isActive = i === active;
+            return (
+              <motion.div
                 key={door.slug}
-                door={{ slug: door.slug, name: door.name, code: door.code, images: door.images }}
-                categoryName={categoryNames[door.categoryId.toString()]}
-              />
-            ))}
+                className="w-36 shrink-0 sm:w-44"
+                animate={{ height: isActive ? CARD_FULL : CARD_REST }}
+                transition={{ type: 'spring', stiffness: 260, damping: 34, mass: 0.9 }}
+              >
+                <Link
+                  href={ROUTES.DOORS_ID(door.slug) as Route}
+                  onMouseEnter={() => setActive(i)}
+                  onFocus={() => setActive(i)}
+                  className="relative block h-full w-full overflow-hidden bg-white/5"
+                  aria-label={door.name}
+                >
+                  {door.image ? (
+                    <img src={door.image} alt="" className="h-full w-full object-cover" />
+                  ) : null}
+                  <MicroLabel className="absolute top-3 left-3 text-white/85 tabular-nums">
+                    {String(i + 1).padStart(2, '0')}
+                  </MicroLabel>
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 bg-black transition-opacity duration-500"
+                    style={{ opacity: isActive ? 0 : 0.18 }}
+                  />
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-t border-white/20 pt-6">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={current.slug}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {current.category ? (
+                <MicroLabel className="text-white/60">{current.category}</MicroLabel>
+              ) : null}
+              <h3 className="font-display mt-1 text-3xl leading-tight sm:text-4xl">
+                {current.name}
+              </h3>
+              <MicroLabel className="mt-1 block text-white/60">{current.code}</MicroLabel>
+            </motion.div>
+          </AnimatePresence>
+          <div className="flex gap-3">
+            <Link
+              href={ROUTES.DOORS_ID(current.slug) as Route}
+              className="bg-surface text-text-primary hover:bg-surface-warm px-6 py-3 text-sm font-medium transition-colors"
+            >
+              View door
+            </Link>
+            <Link
+              href={ROUTES.DOORS_VISUALIZE(current.slug) as Route}
+              className="border border-white/40 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/10"
+            >
+              Try laminates
+            </Link>
           </div>
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   );
 }
