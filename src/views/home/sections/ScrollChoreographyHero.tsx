@@ -38,7 +38,7 @@ export function ScrollChoreographyHero() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black/70" />
       <Grain />
 
-      <div className="relative mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-between px-6 py-12 sm:py-16">
+      <div className="relative mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-between px-4 py-12 sm:px-6 sm:py-16">
         <div className="flex items-start justify-between gap-6">
           <MicroLabel className="text-white/80">The Finish</MicroLabel>
           <MicroLabel className="hidden text-white/80 sm:block">Ahmedabad Made</MicroLabel>

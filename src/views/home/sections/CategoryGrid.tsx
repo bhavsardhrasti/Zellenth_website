@@ -25,7 +25,7 @@ export function CategoryGrid({ categories: allCategories }: { categories: Catego
   if (categories.length === 0) return null;
 
   return (
-    <section className="bg-background px-6 py-20">
+    <section className="bg-background px-4 py-14 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-6xl">
         <MicroLabel className="text-brand">Shop by category</MicroLabel>
         <MaskedHeading

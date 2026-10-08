@@ -29,7 +29,7 @@ export function LaminateWall({ samples }: { samples: LaminateSample[] }) {
   const mid = (samples.length - 1) / 2;
 
   return (
-    <section className="bg-action relative isolate overflow-hidden px-6 py-20 text-white">
+    <section className="bg-action relative isolate overflow-hidden px-4 py-14 sm:px-6 sm:py-20 text-white">
       <Grain />
       <div className="relative mx-auto max-w-6xl">
         <div className="flex items-end justify-between gap-6">

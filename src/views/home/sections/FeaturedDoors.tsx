@@ -28,10 +28,12 @@ const SPRING = { type: 'spring', stiffness: 260, damping: 34, mass: 0.9 } as con
 // real, ungraded product photos — only the glow behind them takes the hue.
 export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.Element | null {
   const [active, setActive] = useState(0);
+  // Mouse hover only highlights a door; it never moves the carousel.
+  const [hovered, setHovered] = useState<number | null>(null);
   const [width, setWidth] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const didDrag = useRef(false);
-  const previewProps = useTapToPreview(setActive);
+  const previewProps = useTapToPreview(setHovered);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -45,11 +47,15 @@ export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.E
 
   const count = doors.length;
   const narrow = width > 0 && width < 640;
-  const cardW = narrow ? Math.min(210, width * 0.52) : 176;
   const gap = narrow ? 12 : 16;
+  // On wide screens shrink the cards so the whole set fits without clipping.
+  const fitW = (width - gap * (count - 1)) / count;
+  const cardW = narrow ? Math.min(210, width * 0.52) : Math.max(120, Math.min(176, fitW));
   const fullH = narrow ? 340 : 400;
   const restH = narrow ? 230 : 250;
   const step = cardW + gap;
+  const fits = !narrow && width > 0 && count * step - gap <= width + 0.5;
+  const startX = (width - (count * step - gap)) / 2;
 
   // The carousel loops: every card sits at its shortest circular distance
   // from the focused one, so "next" on the last door wraps to the first.
@@ -59,11 +65,12 @@ export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.E
     return d;
   };
   const go = (delta: number): void => setActive((a) => (((a + delta) % count) + count) % count);
-  const current = doors[active];
+  const focused = hovered ?? active;
+  const current = doors[focused];
   if (!current) return null;
 
   return (
-    <section className="bg-action relative isolate overflow-hidden px-6 py-20 text-white">
+    <section className="bg-action relative isolate overflow-hidden px-4 py-14 sm:px-6 sm:py-20 text-white">
       <AnimatePresence initial={false}>
         {current.image ? (
           <motion.div
@@ -126,6 +133,7 @@ export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.E
           ref={trackRef}
           className="relative mt-12 overflow-hidden"
           style={{ height: fullH, touchAction: 'pan-y' }}
+          onPointerLeave={() => setHovered(null)}
           onPanStart={() => {
             didDrag.current = true;
           }}
@@ -138,10 +146,10 @@ export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.E
           }}
         >
           {doors.map((door, i) => {
-            const isActive = i === active;
+            const isActive = i === focused;
             const offset = offsetOf(i);
             const preview = previewProps(i);
-            const offscreen = Math.abs(offset) * step > width / 2 + cardW;
+            const offscreen = !fits && Math.abs(offset) * step > width / 2 + cardW;
             return (
               <motion.div
                 key={door.slug}
@@ -149,7 +157,7 @@ export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.E
                 style={{ width: cardW, pointerEvents: offscreen ? 'none' : 'auto' }}
                 initial={false}
                 animate={{
-                  x: width / 2 - cardW / 2 + offset * step,
+                  x: fits ? startX + i * step : width / 2 - cardW / 2 + offset * step,
                   height: isActive ? fullH : restH,
                   opacity: offscreen ? 0 : 1,
                 }}
@@ -164,6 +172,10 @@ export function FeaturedDoors({ doors }: { doors: FeaturedDoor[] }): React.JSX.E
                       return;
                     }
                     preview.onClick(event);
+                    if (event.defaultPrevented) {
+                      setActive(i);
+                      setHovered(null);
+                    }
                   }}
                   draggable={false}
                   className="relative block h-full w-full overflow-hidden bg-white/5"

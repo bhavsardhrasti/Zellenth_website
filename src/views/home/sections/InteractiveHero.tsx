@@ -65,7 +65,7 @@ export function InteractiveHero({ door, laminates }: InteractiveHeroProps) {
         }}
       />
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 py-14 lg:grid-cols-12 lg:gap-10 lg:py-20">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-10 lg:py-20">
         <div className="lg:col-span-5">
           <span className="text-brand text-badge inline-flex items-center gap-1.5 font-medium tracking-wider uppercase">
             <Sparkles aria-hidden className="h-3.5 w-3.5" />

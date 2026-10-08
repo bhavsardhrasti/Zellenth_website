@@ -37,7 +37,7 @@ function CountUp({ value }: { value: string }) {
 // then the pillars as numbered rows — no tiles, icons or cards.
 export function WhyChooseUs() {
   return (
-    <section className="bg-surface-warm px-6 py-20">
+    <section className="bg-surface-warm px-4 py-14 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-6xl">
         <MicroLabel className="text-brand">Why choose us</MicroLabel>
         <MaskedHeading

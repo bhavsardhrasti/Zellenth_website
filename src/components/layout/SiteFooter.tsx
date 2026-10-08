@@ -7,7 +7,7 @@ import { ROUTES } from '@/utils/routes';
 export function SiteFooter() {
   return (
     <footer className="border-border bg-surface border-t">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-12 sm:flex-row sm:justify-between">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:flex-row sm:px-6 sm:justify-between">
         <div className="flex flex-col gap-3">
           <Image
             src="/assets/logo/zellenth-logo-v2.webp"
@@ -70,7 +70,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-border border-t px-6 py-4">
+      <div className="border-border border-t px-4 py-4 sm:px-6">
         <p className="font-body text-text-secondary mx-auto max-w-6xl text-xs">
           © {new Date().getFullYear()} Zellenth. All rights reserved.
         </p>

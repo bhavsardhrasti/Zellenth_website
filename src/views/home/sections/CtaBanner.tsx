@@ -15,7 +15,7 @@ export function CtaBanner() {
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/60" />
       <Grain />
 
-      <div className="relative mx-auto flex min-h-[60vh] max-w-6xl flex-col justify-between gap-12 px-6 py-14">
+      <div className="relative mx-auto flex min-h-[60vh] max-w-6xl flex-col justify-between gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-14">
         <MicroLabel className="text-white/70">Free quote</MicroLabel>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
