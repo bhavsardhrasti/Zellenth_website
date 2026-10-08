@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Poppins, Rozha_One } from 'next/font/google';
+import type { PropsWithChildren } from 'react';
 import './globals.css';
 
 const poppins = Poppins({
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html
       lang="en"
