@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { useRef, type ElementType, type ReactNode } from 'react';
 
@@ -17,7 +18,7 @@ export function Grain({ className }: { className?: string }) {
     <div
       aria-hidden
       className={cn(
-        'pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-overlay',
+        'pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-overlay max-sm:hidden',
         className,
       )}
       style={{ backgroundImage: GRAIN, backgroundSize: '180px 180px' }}
@@ -72,16 +73,33 @@ interface GradedImageProps {
   src: string;
   alt?: string;
   accent: string;
+  sizes?: string;
+  priority?: boolean;
   className?: string;
   imgClassName?: string;
 }
 
 // Editorial/stock photography only — never use on real product photos, the
 // grade would misrepresent a door or laminate's actual colour.
-export function GradedImage({ src, alt = '', accent, className, imgClassName }: GradedImageProps) {
+export function GradedImage({
+  src,
+  alt = '',
+  accent,
+  sizes = '100vw',
+  priority = false,
+  className,
+  imgClassName,
+}: GradedImageProps) {
   return (
     <div className={cn('absolute inset-0 overflow-hidden', className)}>
-      <img src={src} alt={alt} className={cn('h-full w-full object-cover', imgClassName)} />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        className={cn('object-cover', imgClassName)}
+      />
       <div
         className="absolute inset-0"
         style={{ backgroundColor: accent, mixBlendMode: 'color' }}

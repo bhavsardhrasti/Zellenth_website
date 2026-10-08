@@ -11,8 +11,16 @@
 // every size below is a ratio of it, so the same component is pixel-identical in
 // a 600px preview box and on a 4K display.
 import { Pause, Play } from 'lucide-react';
+import Image from 'next/image';
 import * as React from 'react';
-import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion } from 'motion/react';
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+} from 'motion/react';
 
 import { cn } from '@/utils/cn';
 
@@ -68,6 +76,8 @@ const RAIL = 0.2;
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
+const MotionImage = motion.create(Image);
+
 const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
 
 export function HeroCarousel({
@@ -89,6 +99,7 @@ export function HeroCarousel({
   const [dragging, setDragging] = React.useState(false);
   const [paused, setPaused] = React.useState(false);
   const reduced = useReducedMotion();
+  const onScreen = useInView(stageRef);
 
   const last = items.length - 1;
   const index = clamp(controlled ?? uncontrolled, 0, Math.max(0, last));
@@ -120,7 +131,10 @@ export function HeroCarousel({
   const pad = Math.max(16, Math.round(box.w * PAD));
   const label = Math.max(9, Math.round(box.h * LABEL));
 
-  const xFor = React.useCallback((i: number) => box.w / 2 - (i * step + cardW / 2), [box.w, step, cardW]);
+  const xFor = React.useCallback(
+    (i: number) => box.w / 2 - (i * step + cardW / 2),
+    [box.w, step, cardW],
+  );
   const x = useMotionValue(0);
   const target = xFor(index);
 
@@ -146,10 +160,10 @@ export function HeroCarousel({
   const autoplayActive = autoplay && !reduced && !userPaused;
 
   React.useEffect(() => {
-    if (!autoplayActive || paused || dragging || items.length < 2) return;
+    if (!autoplayActive || !onScreen || paused || dragging || items.length < 2) return;
     const id = window.setTimeout(() => go(index === last ? 0 : index + 1), autoplayDelay);
     return () => window.clearTimeout(id);
-  }, [autoplayActive, autoplayDelay, dragging, go, index, items.length, last, paused]);
+  }, [autoplayActive, autoplayDelay, dragging, go, index, items.length, last, onScreen, paused]);
 
   const active = items[index];
   if (!active) return null;
@@ -193,17 +207,23 @@ export function HeroCarousel({
           exit={{ opacity: 0 }}
           transition={swing}
         >
-          <motion.img
+          <MotionImage
             src={active.image}
             alt=""
             aria-hidden
+            fill
+            sizes="100vw"
+            priority={index === 0}
             draggable={false}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="object-cover"
             initial={{ scale: reduced ? 1.28 : 1.42 }}
             animate={{ scale: 1.28 }}
             transition={reduced ? { duration: 0 } : { duration: 6, ease: 'linear' }}
           />
-          <div className="absolute inset-0" style={{ backgroundColor: accent, mixBlendMode: 'color' }} />
+          <div
+            className="absolute inset-0"
+            style={{ backgroundColor: accent, mixBlendMode: 'color' }}
+          />
           <div
             className="absolute inset-0 opacity-55"
             style={{ backgroundColor: accent, mixBlendMode: 'multiply' }}
@@ -275,7 +295,9 @@ export function HeroCarousel({
                     initial={{ y: '110%' }}
                     animate={{ y: 0 }}
                     transition={
-                      reduced ? { duration: 0 } : { duration: 0.62, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }
+                      reduced
+                        ? { duration: 0 }
+                        : { duration: 0.62, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }
                     }
                   >
                     {line}
@@ -299,7 +321,10 @@ export function HeroCarousel({
           ) : null}
 
           {active.meta?.length ? (
-            <div className="ml-auto flex items-end" style={{ gap: `${Math.max(16, box.w * 0.055)}px` }}>
+            <div
+              className="ml-auto flex flex-wrap items-end gap-y-1 max-sm:mt-1 max-sm:ml-0 max-sm:w-full"
+              style={{ columnGap: `${Math.max(16, box.w * 0.055)}px` }}
+            >
               {active.meta.map((fact, i) => (
                 <motion.span
                   key={`${index}-${fact}`}
@@ -307,7 +332,9 @@ export function HeroCarousel({
                   style={{ fontSize: label }}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 0.8, y: 0 }}
-                  transition={reduced ? { duration: 0 } : { duration: 0.45, delay: 0.12 + i * 0.06 }}
+                  transition={
+                    reduced ? { duration: 0 } : { duration: 0.45, delay: 0.12 + i * 0.06 }
+                  }
                 >
                   {fact}
                 </motion.span>
@@ -344,11 +371,13 @@ export function HeroCarousel({
               animate={{ height: i === index ? fullH : halfH }}
               transition={spring}
             >
-              <img
+              <Image
                 src={item.image}
                 alt=""
+                fill
+                sizes="200px"
                 draggable={false}
-                className="h-full w-full object-cover"
+                className="object-cover"
                 style={{ objectPosition: '50% 26%' }}
               />
               <motion.span
@@ -362,8 +391,14 @@ export function HeroCarousel({
         </motion.div>
       </div>
 
-      <div className="absolute" style={{ left: pad, bottom: Math.max(14, box.h * 0.022), width: box.w * RAIL }}>
-        <div className="flex items-center justify-between font-body tabular-nums opacity-80" style={{ fontSize: label }}>
+      <div
+        className="absolute"
+        style={{ left: pad, bottom: Math.max(14, box.h * 0.022), width: box.w * RAIL }}
+      >
+        <div
+          className="flex items-center justify-between font-body tabular-nums opacity-80"
+          style={{ fontSize: label }}
+        >
           <span>{String(index + 1).padStart(2, '0')}</span>
           {autoplay ? (
             <button

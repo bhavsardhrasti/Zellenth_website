@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
     "fabric": "^7.4.0",
+    "lenis": "^1.3.26",
     "lucide-react": "^1.44.0",
     "mongoose": "^9.9.5",
     "motion": "^13.2.0",

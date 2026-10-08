@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 
@@ -65,7 +66,7 @@ export function ScrollChoreographyHero() {
             {CROPS.map((crop) => (
               <figure key={crop.label} className="w-28 shrink-0 sm:w-36">
                 <div className={`relative overflow-hidden ${crop.height}`}>
-                  <img src={crop.src} alt="" className="h-full w-full object-cover" />
+                  <Image src={crop.src} alt="" fill sizes="144px" className="object-cover" />
                 </div>
                 <figcaption className="mt-2">
                   <MicroLabel className="text-white/70">{crop.label}</MicroLabel>

@@ -42,6 +42,7 @@ export function HowItWorks() {
                     <GradedImage
                       src={image.src}
                       accent={image.accent}
+                      sizes="(min-width: 640px) 33vw, 100vw"
                       imgClassName="transition-transform duration-[1200ms] ease-out group-hover:scale-105"
                     />
                   ) : null}

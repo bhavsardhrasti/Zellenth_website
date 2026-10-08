@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { MaskedHeading, MicroLabel } from '@/components/ui/editorial';
+import { useTapToPreview } from '@/hooks/useTapToPreview';
 import { ImageWrapper } from '@/components/shared/ImageWrapper';
 import { ROUTES } from '@/utils/routes';
 import type { CategoryShowcase } from '@/views/home/HomeView';
@@ -17,6 +18,7 @@ export function CategoryGrid({ categories: allCategories }: { categories: Catego
   // A category with no door has no image to preview and nothing to browse.
   const categories = allCategories.filter((category) => category.image);
   const [active, setActive] = useState(0);
+  const previewProps = useTapToPreview(setActive);
   const activeCategory = categories[active];
   const total = String(categories.length).padStart(2, '0');
 
@@ -39,8 +41,7 @@ export function CategoryGrid({ categories: allCategories }: { categories: Catego
                 <li key={category.slug} className="border-border border-b">
                   <Link
                     href={{ pathname: ROUTES.DOORS, query: { category: category.slug } }}
-                    onMouseEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
+                    {...previewProps(i)}
                     className="text-text-primary flex items-baseline gap-5 py-5 transition-opacity duration-300"
                     style={{ opacity: isActive ? 1 : 0.45 }}
                   >
@@ -87,6 +88,9 @@ export function CategoryGrid({ categories: allCategories }: { categories: Catego
             />
             <MicroLabel className="absolute bottom-4 left-4 tabular-nums text-white/85">
               {String(active + 1).padStart(2, '0')} / {total}
+            </MicroLabel>
+            <MicroLabel className="absolute right-4 bottom-4 bg-white px-3 py-2 text-black">
+              Shop {activeCategory?.name} →
             </MicroLabel>
           </Link>
         </div>

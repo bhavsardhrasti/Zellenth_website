@@ -3,6 +3,7 @@ import { Suspense, type ReactNode } from 'react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { PaletteDemoToggle } from '@/components/shared/PaletteDemoToggle';
+import { SmoothScroll } from '@/components/shared/SmoothScroll';
 import { WhatsAppButton } from '@/components/shared/WhatsAppButton';
 import { listDoorCategories } from '@/lib/services/door-category.service';
 
@@ -14,6 +15,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <SmoothScroll />
       <SiteHeader doorCategories={doorCategories} />
       <div className="flex-1">{children}</div>
       <SiteFooter />

@@ -1,11 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { Grain, MaskedHeading, MicroLabel } from '@/components/ui/editorial';
+import { useTapToPreview } from '@/hooks/useTapToPreview';
 import { ROUTES } from '@/utils/routes';
 
 export interface LaminateSample {
@@ -21,6 +23,7 @@ export interface LaminateSample {
 // Real textures stay ungraded so finishes are shown true.
 export function LaminateWall({ samples }: { samples: LaminateSample[] }) {
   const [active, setActive] = useState(Math.floor(samples.length / 2));
+  const previewProps = useTapToPreview(setActive);
   const current = samples[active];
   if (!current) return null;
   const mid = (samples.length - 1) / 2;
@@ -60,13 +63,12 @@ export function LaminateWall({ samples }: { samples: LaminateSample[] }) {
               >
                 <Link
                   href={ROUTES.LAMINATES_ID(sample.slug) as Route}
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
+                  {...previewProps(i)}
                   aria-label={sample.name}
                   className="relative block h-[360px] w-full overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
                 >
                   {sample.image ? (
-                    <img src={sample.image} alt="" className="h-full w-full object-cover" />
+                    <Image src={sample.image} alt="" fill sizes="112px" className="object-cover" />
                   ) : null}
                   <span
                     aria-hidden
