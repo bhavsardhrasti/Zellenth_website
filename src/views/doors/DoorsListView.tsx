@@ -34,7 +34,10 @@ export default function DoorsListView({
     <main>
       <DoorsHero total={meta.total} categoryCount={categories.length} />
       <ProcessBand />
-      <div className="bg-action relative isolate overflow-hidden text-white">
+      <div
+        id="collection"
+        className="bg-action relative isolate scroll-mt-16 overflow-hidden text-white"
+      >
         <div className="from-action/60 to-action absolute inset-0 -z-10 bg-gradient-to-b via-transparent" />
         <Grain />
         <MicroLabel className="relative mx-auto block max-w-6xl px-4 pt-10 pb-5 sm:px-6 sm:pt-14 text-white/60">
@@ -56,6 +59,7 @@ export default function DoorsListView({
                         pathname: ROUTES.DOORS,
                         query: filter.value === 'all' ? {} : { category: filter.value },
                       }}
+                      scroll={false}
                       aria-current={isActive ? 'page' : undefined}
                       className={cn(
                         'font-body text-xs font-medium tracking-[0.14em] uppercase underline-offset-[10px] transition-colors',
@@ -182,7 +186,11 @@ function PaginationControls({
     >
       {meta.hasPreviousPage ? (
         <Link
-          href={{ pathname: ROUTES.DOORS, query: { ...categoryQuery, page: meta.page - 1 } }}
+          href={{
+            pathname: ROUTES.DOORS,
+            query: { ...categoryQuery, page: meta.page - 1 },
+            hash: 'collection',
+          }}
           className={linkClass}
         >
           ← Previous
@@ -195,7 +203,11 @@ function PaginationControls({
       </MicroLabel>
       {meta.hasNextPage ? (
         <Link
-          href={{ pathname: ROUTES.DOORS, query: { ...categoryQuery, page: meta.page + 1 } }}
+          href={{
+            pathname: ROUTES.DOORS,
+            query: { ...categoryQuery, page: meta.page + 1 },
+            hash: 'collection',
+          }}
           className={linkClass}
         >
           Next →
