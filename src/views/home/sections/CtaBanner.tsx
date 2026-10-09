@@ -8,19 +8,23 @@ import { contactInfo } from '@/lib/data/contact';
 // Verified live Unsplash photo, graded to the brand hue like the hero.
 const BACKDROP = 'https://images.unsplash.com/photo-1760085160766-ed473efe941e?w=1800&q=80';
 
-export function CtaBanner() {
+export function CtaBanner(): React.JSX.Element {
   return (
     <section className="relative isolate overflow-hidden bg-black text-white">
       <GradedImage src={BACKDROP} accent="#8f552d" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/65 to-black/75" />
       <Grain />
 
-      <div className="relative mx-auto flex min-h-[60vh] max-w-6xl flex-col justify-between gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-14">
+      <div className="relative mx-auto flex min-h-[60vh] max-w-6xl flex-col justify-between gap-10 px-4 pt-12 pb-24 sm:gap-12 sm:px-6 sm:py-14">
         <MicroLabel className="text-white/70">Free quote</MicroLabel>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <MaskedHeading lines={['Let’s build', 'your door.']} className="text-5xl sm:text-7xl" />
+            <MaskedHeading
+              lines={['Let’s build', 'your door.']}
+              immediate
+              className="text-5xl sm:text-7xl"
+            />
             <p className="font-body mt-6 max-w-sm text-sm text-white/75">
               Talk to our team about your door and laminate requirements. No login required.
             </p>

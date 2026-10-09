@@ -9,7 +9,7 @@ import { cn } from '@/utils/cn';
 
 export interface NavDropdownItem {
   label: string;
-  href: Route | { pathname: string; query?: Record<string, string> };
+  href: Route | { pathname: string; query?: Record<string, string>; hash?: string };
 }
 
 interface NavDropdownProps {
@@ -36,7 +36,7 @@ export function NavDropdown({
   viewAllLabel,
   viewAllHref,
   items,
-}: NavDropdownProps) {
+}: NavDropdownProps): React.JSX.Element {
   return (
     <div className="relative" onMouseEnter={onOpenHover} onMouseLeave={onCloseHover}>
       <button

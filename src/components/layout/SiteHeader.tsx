@@ -22,7 +22,7 @@ interface SiteHeaderProps {
 
 type DropdownKey = 'doors' | 'laminates';
 
-function WatchlistNavLink({ className }: { className: string }) {
+function WatchlistNavLink({ className }: { className: string }): React.JSX.Element {
   const { items, hasLoaded } = useWatchlist();
 
   return (
@@ -41,7 +41,7 @@ function WatchlistNavLink({ className }: { className: string }) {
   );
 }
 
-export function SiteHeader({ doorCategories }: SiteHeaderProps) {
+export function SiteHeader({ doorCategories }: SiteHeaderProps): React.JSX.Element {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
@@ -50,35 +50,35 @@ export function SiteHeader({ doorCategories }: SiteHeaderProps) {
   const navRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+  useEffect((): (() => void) => {
+    function handleClickOutside(event: MouseEvent): void {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return (): void => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    return () => {
+  useEffect((): (() => void) => {
+    return (): void => {
       if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     };
   }, []);
 
-  function clearCloseTimeout() {
+  function clearCloseTimeout(): void {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
   }
 
-  function openDropdownOnHover(key: DropdownKey) {
+  function openDropdownOnHover(key: DropdownKey): void {
     clearCloseTimeout();
     setOpenDropdown(key);
   }
 
-  function closeDropdownOnHover() {
+  function closeDropdownOnHover(): void {
     clearCloseTimeout();
     closeTimeoutRef.current = setTimeout(() => setOpenDropdown(null), 150);
   }
@@ -89,16 +89,16 @@ export function SiteHeader({ doorCategories }: SiteHeaderProps) {
   const isAboutActive = pathname === ROUTES.ABOUT;
   const isContactActive = pathname === ROUTES.CONTACT;
 
-  function toggleDropdown(key: DropdownKey) {
+  function toggleDropdown(key: DropdownKey): void {
     clearCloseTimeout();
     setOpenDropdown((current) => (current === key ? null : key));
   }
 
-  function toggleMobileSection(key: DropdownKey) {
+  function toggleMobileSection(key: DropdownKey): void {
     setOpenMobileSection((current) => (current === key ? null : key));
   }
 
-  function closeMobileMenu() {
+  function closeMobileMenu(): void {
     setIsMenuOpen(false);
     setOpenMobileSection(null);
   }
@@ -149,7 +149,11 @@ export function SiteHeader({ doorCategories }: SiteHeaderProps) {
             viewAllHref={ROUTES.LAMINATES as Route}
             items={laminateFinishOptions.map((option) => ({
               label: option.label,
-              href: { pathname: ROUTES.LAMINATES, query: { finish: option.value } },
+              href: {
+                pathname: ROUTES.LAMINATES,
+                query: { finish: option.value },
+                hash: 'board',
+              },
             }))}
           />
 
@@ -208,7 +212,11 @@ export function SiteHeader({ doorCategories }: SiteHeaderProps) {
         }))}
         laminateItems={laminateFinishOptions.map((option) => ({
           label: option.label,
-          href: { pathname: ROUTES.LAMINATES, query: { finish: option.value } },
+          href: {
+            pathname: ROUTES.LAMINATES,
+            query: { finish: option.value },
+            hash: 'board',
+          },
         }))}
         onEnquireClick={() => {
           closeMobileMenu();

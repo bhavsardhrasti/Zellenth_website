@@ -7,6 +7,7 @@ interface AnimatedSectionProps {
   children: ReactNode;
   className?: string;
   delay?: number;
+  duration?: number;
   /**
    * Use for content already in the initial viewport (e.g. a page hero right
    * below the breadcrumb). Animates in on mount instead of waiting on a
@@ -20,12 +21,13 @@ export function AnimatedSection({
   children,
   className,
   delay = 0,
+  duration = 0.5,
   immediate = false,
-}: AnimatedSectionProps) {
+}: AnimatedSectionProps): React.JSX.Element {
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
-    : { duration: 0.5, delay, ease: 'easeOut' as const };
+    : { duration, delay, ease: 'easeOut' as const };
 
   if (immediate) {
     return (

@@ -1,14 +1,19 @@
 import Link from 'next/link';
-import type { Route } from 'next';
 
-import { ImageWrapper } from '@/components/shared/ImageWrapper';
-import { WatchlistButton } from '@/components/shared/WatchlistButton';
-import { MicroLabel } from '@/components/ui/editorial';
+import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { Grain, MicroLabel } from '@/components/ui/editorial';
 import { laminateFinishOptions } from '@/lib/data/nav';
 import { cn } from '@/utils/cn';
 import { ROUTES } from '@/utils/routes';
 import { CtaBanner } from '@/views/home/sections/CtaBanner';
-import { FinishGuide, LaminatesHero, SampleNotes } from '@/views/laminates/LaminatesSections';
+import { ColorFamilyShowcase } from '@/views/laminates/ColorFamilyShowcase';
+import { DoorPreviewStrip } from '@/views/laminates/DoorPreviewStrip';
+import { FinishGuide, LaminatesHero, LaminatesTrustRow } from '@/views/laminates/LaminatesSections';
+import { SampleNotes } from '@/views/laminates/SampleNotes';
+import { ProjectInspiration } from '@/views/laminates/ProjectInspiration';
+import { SpecimenArchive } from '@/views/laminates/SpecimenArchive';
+import { DEMO_SWATCHES, filterDemoSwatches, withDoorImages } from '@/views/laminates/demoSwatches';
+import type { LaminateSpecimen } from '@/views/laminates/SpecimenArchive';
 import type { LaminateDocument } from '@/lib/db/models/Laminate.model';
 import type { PaginatedMeta } from '@/types/api';
 
@@ -16,201 +21,217 @@ export interface LaminatesListViewProps {
   laminates: LaminateDocument[];
   meta: PaginatedMeta;
   activeFinish: string;
+  colorFamilies: string[];
+  activeColor: string;
+  /** One real swatch URL per colour family, drawn from the whole finish. */
+  colorSwatches: Record<string, string | undefined>;
+  previewDoorImages: { src: string; alt: string }[];
 }
 
-// A sample board: finishes run down a sticky side index (a scrolling strip on
-// phones) and the swatches sit beside it as square chips with a spec caption.
+// The laminates page reads as a materials archive: a full-bleed hero, a photo
+// guide to the three surface types, finish previews, inspiration and a swatch
+// grid. Filters are real links, so every state is shareable without client
+// filter state.
 export default function LaminatesListView({
   laminates,
   meta,
   activeFinish,
+  colorFamilies,
+  activeColor,
+  colorSwatches,
+  previewDoorImages,
 }: LaminatesListViewProps): React.JSX.Element {
-  const filters = [{ label: 'All', value: 'all' }].concat(
-    laminateFinishOptions.map((option) => ({ label: option.label, value: option.value })),
-  );
-  const offset = (meta.page - 1) * 25;
+  const isPreviewCatalog = meta.total === 0;
+  const previewSwatches: LaminateSpecimen[] = withDoorImages(previewDoorImages);
+  const archiveFamilies = isPreviewCatalog
+    ? Array.from(new Set(previewSwatches.map((swatch) => swatch.colorFamily))).sort((a, b) =>
+        a.localeCompare(b),
+      )
+    : colorFamilies;
+  const archiveSwatches = isPreviewCatalog
+    ? Object.fromEntries(
+        archiveFamilies.map((family) => [
+          family,
+          previewSwatches.find((swatch) => swatch.colorFamily === family)?.image,
+        ]),
+      )
+    : colorSwatches;
+  const displayedTotal = isPreviewCatalog
+    ? filterDemoSwatches(activeFinish, activeColor).length
+    : meta.total;
+  const displayedMeta = isPreviewCatalog ? { ...meta, total: displayedTotal, totalPages: 1 } : meta;
+  const previewImages = Array.from(
+    new Set(
+      previewSwatches.map((swatch) => swatch.image).filter((image): image is string => !!image),
+    ),
+  ).slice(0, 3);
 
   return (
     <main>
-      <LaminatesHero total={meta.total} />
-      <FinishGuide />
+      <AnimatedSection immediate duration={0.4}>
+        <LaminatesHero isPreviewCatalog={isPreviewCatalog} />
+      </AnimatedSection>
+      <AnimatedSection duration={0.4} delay={0.04}>
+        <LaminatesTrustRow
+          total={isPreviewCatalog ? DEMO_SWATCHES.length : meta.total}
+          isPreviewCatalog={isPreviewCatalog}
+        />
+      </AnimatedSection>
 
-      <section id="board" className="bg-surface-warm scroll-mt-16 px-4 pb-14 sm:px-6 sm:pb-20">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[200px_1fr] lg:gap-12">
-          <nav aria-label="Filter by finish" className="lg:sticky lg:top-24 lg:self-start">
-            <MicroLabel className="text-brand block pt-10">
-              The board · {String(meta.total).padStart(2, '0')}
-            </MicroLabel>
-            <ul className="border-border mt-4 flex gap-6 overflow-x-auto border-y py-3 whitespace-nowrap lg:flex-col lg:gap-0 lg:border-y-0 lg:py-0">
-              {filters.map((filter) => {
-                const isActive = filter.value === activeFinish;
-                return (
-                  <li key={filter.value} className="border-border shrink-0 lg:border-b">
-                    <Link
-                      href={{
-                        pathname: ROUTES.LAMINATES,
-                        query: filter.value === 'all' ? {} : { finish: filter.value },
-                      }}
-                      scroll={false}
-                      aria-current={isActive ? 'page' : undefined}
-                      className={cn(
-                        'font-body block text-xs font-medium tracking-[0.14em] uppercase underline-offset-[10px] transition-colors lg:py-4',
-                        isActive
-                          ? 'text-text-primary underline decoration-2 lg:no-underline'
-                          : 'text-text-secondary hover:text-text-primary',
-                      )}
-                    >
-                      <span className="flex items-center gap-3">
-                        <span
-                          aria-hidden
-                          className={cn(
-                            'bg-brand hidden h-px transition-all duration-300 lg:block',
-                            isActive ? 'w-6' : 'w-0',
-                          )}
-                        />
-                        {filter.label}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+      <AnimatedSection duration={0.4}>
+        <FinishGuide activeFinish={activeFinish} />
+      </AnimatedSection>
 
-          <div className="lg:pt-10">
-            {laminates.length === 0 ? (
-              <p className="font-body text-text-secondary py-20 text-center">
-                No laminates in this finish yet. Check back soon.
-              </p>
-            ) : (
-              <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:gap-x-6">
-                {laminates.map((laminate, i) => (
-                  <SwatchChip key={laminate.slug} laminate={laminate} index={offset + i + 1} />
-                ))}
-              </div>
-            )}
-            <PaginationControls meta={meta} activeFinish={activeFinish} />
+      <AnimatedSection duration={0.4}>
+        <ColorFamilyShowcase
+          colorFamilies={archiveFamilies}
+          activeColor={activeColor}
+          swatches={archiveSwatches}
+        />
+      </AnimatedSection>
+
+      <AnimatedSection duration={0.4}>
+        <DoorPreviewStrip images={previewImages} />
+      </AnimatedSection>
+
+      <AnimatedSection duration={0.4}>
+        <ProjectInspiration />
+      </AnimatedSection>
+
+      {/* The board — a dark, sticky filter rail so the controls stay in reach
+          while the specimen index scrolls beneath them. */}
+      <AnimatedSection duration={0.4}>
+        <section id="board" className="bg-surface-warm scroll-mt-16 px-4 pt-8 sm:px-6">
+          <div className="bg-action relative isolate overflow-hidden text-white sm:sticky sm:top-16 sm:z-30">
+            <Grain />
+            <div className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6">
+              <FilterRail
+                activeFinish={activeFinish}
+                activeColor={activeColor}
+                colorFamilies={archiveFamilies}
+                meta={displayedMeta}
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </AnimatedSection>
 
-      <SampleNotes />
-      <CtaBanner />
+      <AnimatedSection duration={0.4}>
+        <SpecimenArchive
+          laminates={laminates}
+          activeFinish={activeFinish}
+          activeColor={activeColor}
+          isPreviewCatalog={isPreviewCatalog}
+          previewSwatches={previewSwatches}
+        />
+      </AnimatedSection>
+
+      <AnimatedSection duration={0.4}>
+        <SampleNotes />
+      </AnimatedSection>
+      <AnimatedSection duration={0.4}>
+        <CtaBanner />
+      </AnimatedSection>
     </main>
   );
 }
 
-function SwatchChip({
-  laminate,
-  index,
-}: {
-  laminate: LaminateDocument;
-  index: number;
-}): React.JSX.Element {
-  const image = laminate.images.find((item) => item.isPrimary) ?? laminate.images[0];
-  const spec = [laminate.finish, laminate.size, laminate.grainDirection]
-    .filter(Boolean)
-    .join(' · ');
-  return (
-    <article className="group flex h-full flex-col">
-      <div className="bg-neutral-tint relative aspect-square shrink-0 overflow-hidden">
-        <Link
-          href={ROUTES.LAMINATES_ID(laminate.slug) as Route}
-          aria-label={laminate.name}
-          className="absolute inset-0"
-        >
-          <ImageWrapper
-            src={image?.url.mid}
-            alt={image?.altText ?? laminate.name}
-            sizes="(min-width: 1024px) 28vw, (min-width: 768px) 30vw, 50vw"
-            className="transition-transform duration-700 ease-out group-hover:scale-110"
-            emptyLabel="No image yet"
-          />
-          <MicroLabel className="absolute top-3 left-3 text-white/90 tabular-nums mix-blend-difference">
-            {String(index).padStart(2, '0')}
-          </MicroLabel>
-        </Link>
-        <WatchlistButton
-          type="laminate"
-          slug={laminate.slug}
-          name={laminate.name}
-          code={laminate.code}
-          imageUrl={image?.url.thumbnail}
-        />
-      </div>
-      <div className="border-border mt-3 flex-1 border-t pt-3">
-        <MicroLabel className="text-brand">{laminate.colorFamily}</MicroLabel>
-        <h2 className="font-display text-text-primary mt-1 line-clamp-2 min-h-[2lh] text-xl leading-tight">
-          {laminate.name}
-        </h2>
-        <MicroLabel className="text-text-secondary mt-1 block">{laminate.code}</MicroLabel>
-        {spec ? (
-          <p className="font-body text-text-secondary mt-2 text-xs leading-relaxed capitalize">
-            {spec}
-          </p>
-        ) : null}
-      </div>
-      <Link
-        href={ROUTES.LAMINATES_ID(laminate.slug) as Route}
-        className="font-body text-text-primary mt-4 text-xs font-medium tracking-[0.14em] uppercase underline underline-offset-8 transition-opacity hover:opacity-60"
-      >
-        View swatch →
-      </Link>
-    </article>
-  );
+interface FilterRailProps {
+  activeFinish: string;
+  activeColor: string;
+  colorFamilies: string[];
+  meta: PaginatedMeta;
 }
 
-function PaginationControls({
-  meta,
+// Two stacked rails: finish (drives the whole page) and colour family (refines
+// the specimen index). Both are plain links with the current one marked.
+function FilterRail({
   activeFinish,
-}: {
-  meta: PaginatedMeta;
-  activeFinish: string;
-}): React.JSX.Element | null {
-  if (meta.totalPages <= 1) {
-    return null;
-  }
+  activeColor,
+  colorFamilies,
+  meta,
+}: FilterRailProps): React.JSX.Element {
+  const finishFilters = [{ label: 'All', value: 'all' }].concat(
+    laminateFinishOptions.map((option) => ({ label: option.label, value: option.value })),
+  );
 
-  const finishQuery = activeFinish === 'all' ? {} : { finish: activeFinish };
-  const linkClass =
-    'font-body text-text-primary text-xs font-medium tracking-[0.14em] uppercase underline underline-offset-8';
+  const colorFilters = [{ label: 'Any colour', value: 'all' }].concat(
+    colorFamilies.map((family) => ({ label: family, value: family })),
+  );
+
+  const href = (
+    finish: string,
+    color: string,
+  ): { pathname: string; query: Record<string, string>; hash: string } => {
+    const query: Record<string, string> = {};
+    if (finish !== 'all') query.finish = finish;
+    if (color !== 'all') query.color = color;
+    return { pathname: ROUTES.LAMINATES, query, hash: 'board' };
+  };
+
+  const chipClass = (isActive: boolean): string =>
+    cn(
+      'font-body block border px-4 py-2 text-xs font-medium tracking-[0.14em] uppercase transition-colors',
+      isActive
+        ? 'bg-surface text-text-primary border-surface'
+        : 'border-white/25 text-white/75 hover:border-white/60 hover:text-white',
+    );
 
   return (
-    <nav
-      className="border-border mt-14 flex items-center justify-between border-t pt-6"
-      aria-label="Pagination"
-    >
-      {meta.hasPreviousPage ? (
-        <Link
-          href={{
-            pathname: ROUTES.LAMINATES,
-            query: { ...finishQuery, page: meta.page - 1 },
-            hash: 'board',
-          }}
-          className={linkClass}
-        >
-          ← Previous
-        </Link>
-      ) : (
-        <span />
-      )}
-      <MicroLabel className="text-text-secondary tabular-nums">
-        {meta.page} / {meta.totalPages}
-      </MicroLabel>
-      {meta.hasNextPage ? (
-        <Link
-          href={{
-            pathname: ROUTES.LAMINATES,
-            query: { ...finishQuery, page: meta.page + 1 },
-            hash: 'board',
-          }}
-          className={linkClass}
-        >
-          Next →
-        </Link>
-      ) : (
-        <span />
-      )}
-    </nav>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <MicroLabel className="text-white/60">Filter the archive</MicroLabel>
+        <MicroLabel className="text-white/60 tabular-nums">
+          {meta.total} {meta.total === 1 ? 'finish' : 'finishes'}
+          {activeFinish !== 'all' ? ` · ${activeFinish}` : ''}
+          {activeColor !== 'all' ? ` · ${activeColor}` : ''}
+          {meta.totalPages > 1 ? ` · page ${meta.page} of ${meta.totalPages}` : ''}
+        </MicroLabel>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <MicroLabel className="w-16 shrink-0 text-white/45">Finish</MicroLabel>
+        <ul className="flex flex-wrap gap-2">
+          {finishFilters.map((filter) => {
+            const isActive = filter.value === activeFinish;
+            return (
+              <li key={filter.value}>
+                <Link
+                  href={href(filter.value, activeColor)}
+                  scroll={false}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={chipClass(isActive)}
+                >
+                  {filter.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {colorFamilies.length > 1 ? (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <MicroLabel className="w-16 shrink-0 text-white/45">Colour</MicroLabel>
+          <ul className="flex flex-wrap gap-2">
+            {colorFilters.map((filter) => {
+              const isActive = filter.value === activeColor;
+              return (
+                <li key={filter.value}>
+                  <Link
+                    href={href(activeFinish, filter.value)}
+                    scroll={false}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={chipClass(isActive)}
+                  >
+                    {filter.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
+    </div>
   );
 }

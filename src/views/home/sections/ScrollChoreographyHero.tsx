@@ -31,7 +31,7 @@ const CROPS = [
 // Same grammar as the hero: one graded full-bleed photograph, a masked
 // display headline, uppercase facts on the right, and a strip of crops that
 // share a top edge — the first one unfurled taller than its neighbours.
-export function ScrollChoreographyHero() {
+export function ScrollChoreographyHero(): React.JSX.Element {
   return (
     <section className="relative isolate overflow-hidden bg-black text-white">
       <GradedImage src={BACKDROP} accent="#8f552d" imgClassName="scale-110" />
@@ -48,6 +48,7 @@ export function ScrollChoreographyHero() {
           <div>
             <MaskedHeading
               lines={['Every detail,', 'considered.']}
+              immediate
               className="text-5xl sm:text-7xl"
             />
             <p className="font-body mt-6 max-w-sm text-sm text-white/75">
