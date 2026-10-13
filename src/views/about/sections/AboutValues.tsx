@@ -8,7 +8,7 @@ export function AboutValues() {
       <div className="mx-auto max-w-6xl">
         <MicroLabel className="text-brand">Our approach</MicroLabel>
         <MaskedHeading
-          lines={['What we', 'stand for.']}
+          lines={['What we stand for.']}
           className="text-text-primary mt-4 text-4xl sm:text-6xl"
         />
         <p className="font-body text-text-secondary mt-6 max-w-md">
@@ -18,16 +18,16 @@ export function AboutValues() {
           {aboutValues.map((value, index) => (
             <li
               key={value.title}
-              className="group grid gap-2 py-8 sm:grid-cols-12 sm:items-baseline sm:gap-6"
+              className="group grid gap-2 py-8 sm:grid-cols-11 sm:items-baseline sm:gap-6"
             >
-              <MicroLabel className="text-brand tabular-nums sm:col-span-1">
-                {String(index + 1).padStart(2, '0')}
-              </MicroLabel>
-              <h3 className="font-display text-text-primary flex items-center gap-3 text-2xl leading-tight sm:col-span-5">
-                <value.icon aria-hidden className="text-brand h-5 w-5 shrink-0" />
+              <h3 className="font-display text-text-primary flex items-baseline gap-3 text-2xl leading-tight sm:col-span-6">
+                <MicroLabel className="text-brand tabular-nums">
+                  {String(index + 1).padStart(2, '0')}
+                </MicroLabel>
+                <value.icon aria-hidden className="text-brand h-5 w-5 shrink-0 self-center" />
                 {value.title}
               </h3>
-              <p className="font-body text-text-secondary text-sm sm:col-span-6">
+              <p className="font-body text-text-secondary text-sm sm:col-span-5">
                 {value.description}
               </p>
             </li>

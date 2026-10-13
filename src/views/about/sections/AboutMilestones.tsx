@@ -18,7 +18,7 @@ export function AboutMilestones() {
         <div ref={ref} className="relative mt-14 pl-6 sm:pl-0">
           <div
             aria-hidden
-            className="bg-border absolute top-2 bottom-2 left-0 w-px sm:left-[7.5rem]"
+            className="bg-border absolute top-8 bottom-8 left-0 w-px sm:left-[7.5rem]"
           >
             <motion.div
               className="bg-brand absolute inset-x-0 top-0 h-full origin-top"
@@ -28,17 +28,23 @@ export function AboutMilestones() {
             />
           </div>
           <ol className="divide-border divide-y">
-            {aboutMilestones.map((milestone) => (
+            {aboutMilestones.map((milestone, i, arr) => (
               <li
                 key={milestone.year}
                 className="relative grid gap-2 py-7 sm:grid-cols-12 sm:items-baseline sm:gap-6"
               >
+                {i === arr.length - 1 && (
+                  <span
+                    aria-hidden
+                    className="bg-background absolute top-[calc(2rem+10px)] bottom-0 left-0 w-[3px] -translate-x-1/2 sm:left-[calc(7.5rem+0.5px)]"
+                  />
+                )}
                 <MicroLabel className="text-brand tabular-nums sm:col-span-2">
                   {milestone.year}
                 </MicroLabel>
                 <span
                   aria-hidden
-                  className="bg-brand absolute -left-[1.125rem] top-8 h-1.5 w-1.5 -translate-y-1/2 rounded-full sm:left-[7.31rem]"
+                  className="bg-brand absolute top-8 left-0 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-4 ring-background sm:left-[calc(7.5rem+0.5px)]"
                 />
                 <h3 className="font-display text-text-primary text-2xl leading-tight sm:col-span-4">
                   {milestone.title}

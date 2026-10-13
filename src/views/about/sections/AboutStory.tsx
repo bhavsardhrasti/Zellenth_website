@@ -1,21 +1,12 @@
 'use client';
+import Link from 'next/link';
+import type { Route } from 'next';
+import { ChevronRight } from 'lucide-react';
+
 import { GradedImage, Grain, MaskedHeading, MicroLabel } from '@/components/ui/editorial';
 import { facilityFacts } from '@/lib/data/about';
 const WORKSHOP = 'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=1800&q=80';
-const CROPS = [
-  {
-    src: 'https://images.unsplash.com/photo-1760085160766-ed473efe941e?w=600&q=80',
-    label: 'Raw timber',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1611600700192-d87eaeed4f81?w=600&q=80',
-    label: 'Finish library',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1772696860271-c53a0e799d31?w=600&q=80',
-    label: 'In the room',
-  },
-];
+
 export function AboutStory() {
   return (
     <section className="relative isolate overflow-hidden bg-black text-white">
@@ -24,7 +15,24 @@ export function AboutStory() {
       <Grain />
       <div className="relative mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-between px-6 py-12 sm:py-16">
         <div className="flex items-start justify-between gap-6">
-          <MicroLabel className="text-white/80">The Workshop</MicroLabel>
+          <nav aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-1.5">
+              <li className="flex items-center gap-1.5">
+                <Link
+                  href={'/' as Route}
+                  className="font-body text-xs font-medium tracking-wide text-white/60 uppercase transition-colors hover:text-white"
+                >
+                  Home
+                </Link>
+              </li>
+              <li className="flex items-center gap-1.5">
+                <ChevronRight aria-hidden className="h-3 w-3 text-white/40" />
+                <span className="font-body text-brand text-xs font-medium tracking-wide uppercase text-white/40">
+                  About
+                </span>
+              </li>
+            </ol>
+          </nav>
           <MicroLabel className="hidden text-white/80 sm:block">Vatva GIDC · Ahmedabad</MicroLabel>
         </div>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
@@ -48,18 +56,6 @@ export function AboutStory() {
               </div>
             ))}
           </dl>
-        </div>
-        <div className="mt-10 flex items-start gap-3 border-t border-white/20 pt-8">
-          {CROPS.map((crop) => (
-            <figure key={crop.label} className="w-28 shrink-0 sm:w-36">
-              <div className="relative h-32 overflow-hidden sm:h-40">
-                <img src={crop.src} alt="" className="h-full w-full object-cover" />
-              </div>
-              <figcaption className="mt-2">
-                <MicroLabel className="text-white/70">{crop.label}</MicroLabel>
-              </figcaption>
-            </figure>
-          ))}
         </div>
       </div>
     </section>
