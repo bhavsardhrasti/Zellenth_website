@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Route } from 'next';
 
 import { Grain, GradedImage, MaskedHeading, MicroLabel } from '@/components/ui/editorial';
 import { ROUTES } from '@/utils/routes';
@@ -13,27 +12,12 @@ const HERO_PHOTO = 'https://images.unsplash.com/photo-1559006863-03e0799b836a?w=
 
 // The hero's crop strip — three details that share a top edge, the first
 // unfurled taller than its neighbours (the grammar of ScrollChoreographyHero).
-const HERO_CROPS = [
-  {
-    src: 'https://images.unsplash.com/photo-1611600700192-d87eaeed4f81?w=600&q=80',
-    label: 'Grain & sheen',
-    height: 'h-44 sm:h-56',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1617307074423-6344f18d357f?w=600&q=80',
-    label: 'Edge detail',
-    height: 'h-32 sm:h-40',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1772696860271-c53a0e799d31?w=600&q=80',
-    label: 'In the room',
-    height: 'h-32 sm:h-40',
-  },
-];
 
 export function LaminatesHero({
+  total,
   isPreviewCatalog,
 }: {
+  total: number;
   isPreviewCatalog: boolean;
 }): React.JSX.Element {
   return (
@@ -66,75 +50,31 @@ export function LaminatesHero({
                 ? 'Explore a set of finish concepts, then ask our team to confirm current availability and request a physical sample.'
                 : 'Wood grains, stone looks and solid colours  each laminate is photographed flat so you can judge the real tone, then tried on an actual Zellenth door before you commit.'}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href={{ pathname: ROUTES.LAMINATES, hash: 'board' }}
-                scroll={false}
-                className="bg-surface text-text-primary hover:bg-surface-warm px-6 py-3 text-sm font-medium transition-colors"
-              >
-                Browse the board
-              </Link>
-              <Link
-                href={ROUTES.DOORS as Route}
-                className="border border-white/40 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/10"
-              >
-                Try on a door
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            {HERO_CROPS.map((crop) => (
-              <figure key={crop.label} className="w-24 shrink-0 sm:w-32">
-                <div className={cn('relative overflow-hidden', crop.height)}>
-                  <Image src={crop.src} alt="" fill sizes="128px" className="object-cover" />
-                  <span aria-hidden className="absolute inset-0 bg-black/15" />
-                </div>
-                <figcaption className="mt-2">
-                  <MicroLabel className="text-white/70">{crop.label}</MicroLabel>
-                </figcaption>
-              </figure>
-            ))}
+            <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-white/20 pt-6 sm:gap-10">
+              <div>
+                <dt className="font-display text-4xl tabular-nums sm:text-5xl">{total}</dt>
+                <dd className="mt-1">
+                  <MicroLabel className="text-white/65">
+                    {isPreviewCatalog ? 'Finish previews' : 'Finishes to explore'}
+                  </MicroLabel>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-display text-5xl tabular-nums sm:text-5xl">03</dt>
+                <dd className="mt-1">
+                  <MicroLabel className="text-white/65">Surface finishes</MicroLabel>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-display text-5xl tabular-nums sm:text-5xl">Live</dt>
+                <dd className="mt-1">
+                  <MicroLabel className="text-white/65">Door visualizer</MicroLabel>
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
-    </section>
-  );
-}
-
-export function LaminatesTrustRow({
-  total,
-  isPreviewCatalog,
-}: {
-  total: number;
-  isPreviewCatalog: boolean;
-}): React.JSX.Element {
-  const trustPoints = [
-    {
-      value: String(total),
-      label: isPreviewCatalog ? 'Finish previews' : 'Finishes to explore',
-    },
-    { value: '03', label: 'Surface finishes' },
-    { value: 'Live', label: 'Door visualizer' },
-  ];
-
-  return (
-    <section
-      aria-label="Laminates at a glance"
-      className="bg-surface border-border border-b px-4 sm:px-6"
-    >
-      <dl className="mx-auto grid max-w-6xl grid-cols-3 divide-x divide-border">
-        {trustPoints.map((point) => (
-          <div key={point.label} className="py-5 text-center sm:py-6">
-            <dt className="font-display text-text-primary text-2xl tabular-nums sm:text-3xl">
-              {point.value}
-            </dt>
-            <dd className="mt-1">
-              <MicroLabel className="text-text-secondary">{point.label}</MicroLabel>
-            </dd>
-          </div>
-        ))}
-      </dl>
     </section>
   );
 }
@@ -180,24 +120,24 @@ const FINISHES = [
 
 export function FinishGuide({ activeFinish }: { activeFinish?: string }): React.JSX.Element {
   return (
-    <section className="bg-action relative isolate overflow-hidden px-4 py-14 text-white sm:px-6 sm:py-20">
+    <section className="bg-surface-warm relative isolate overflow-hidden px-4 py-14 sm:px-6 sm:py-20">
       <Grain />
       <div className="relative mx-auto max-w-6xl">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <MicroLabel className="text-white/60">Know your finish</MicroLabel>
+            <MicroLabel className="text-brand">Know your finish</MicroLabel>
             <MaskedHeading
               lines={['Three ways', 'a surface can feel.']}
               className="mt-4 text-4xl sm:text-6xl"
             />
           </div>
-          <p className="font-body max-w-xs text-sm leading-relaxed text-white/70">
+          <p className="font-body max-w-xs text-sm leading-relaxed text-text-secondary">
             Sheen, reflection and texture change how a colour reads in a room. Pick the surface that
             suits the space, then narrow by tone below.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-10 border-t border-white/20 pt-8 md:grid-cols-3 md:gap-8">
+        <div className="mt-12 grid gap-10 border-t border-border pt-8 md:grid-cols-3 md:gap-8">
           {FINISHES.map((finish, i) => {
             const isActive = finish.value === activeFinish;
             return (
@@ -258,22 +198,22 @@ export function FinishGuide({ activeFinish }: { activeFinish?: string }): React.
                   </div>
                 </div>
 
-                <p className="font-body mt-5 text-sm leading-relaxed text-white/70">
+                <p className="font-body mt-5 flex-1 text-sm leading-relaxed text-text-secondary">
                   {finish.body}
                 </p>
 
                 {/* A small spec block so the difference between the three
                     types is readable as facts, not just adjectives. */}
-                <dl className="mt-5 border-t border-white/15">
+                <dl className="mt-5 border-t border-border">
                   {finish.facts.map(([label, value]) => (
                     <div
                       key={label}
-                      className="flex items-baseline justify-between gap-4 border-b border-white/10 py-2.5"
+                      className="flex items-baseline justify-between gap-4 border-b border-border py-2.5"
                     >
                       <dt>
-                        <MicroLabel className="text-white/45">{label}</MicroLabel>
+                        <MicroLabel className="text-brand">{label}</MicroLabel>
                       </dt>
-                      <dd className="font-body text-sm text-white/85">{value}</dd>
+                      <dd className="font-body text-sm text-text-secondary">{value}</dd>
                     </div>
                   ))}
                 </dl>

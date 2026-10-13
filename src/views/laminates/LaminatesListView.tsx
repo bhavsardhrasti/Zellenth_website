@@ -8,7 +8,7 @@ import { ROUTES } from '@/utils/routes';
 import { CtaBanner } from '@/views/home/sections/CtaBanner';
 import { ColorFamilyShowcase } from '@/views/laminates/ColorFamilyShowcase';
 import { DoorPreviewStrip } from '@/views/laminates/DoorPreviewStrip';
-import { FinishGuide, LaminatesHero, LaminatesTrustRow } from '@/views/laminates/LaminatesSections';
+import { FinishGuide, LaminatesHero } from '@/views/laminates/LaminatesSections';
 import { SampleNotes } from '@/views/laminates/SampleNotes';
 import { ProjectInspiration } from '@/views/laminates/ProjectInspiration';
 import { SpecimenArchive } from '@/views/laminates/SpecimenArchive';
@@ -26,6 +26,26 @@ export interface LaminatesListViewProps {
   /** One real swatch URL per colour family, drawn from the whole finish. */
   colorSwatches: Record<string, string | undefined>;
   previewDoorImages: { src: string; alt: string }[];
+}
+
+function toLaminateSpecimens(laminates: LaminateDocument[]): LaminateSpecimen[] {
+  return laminates.map((laminate) => {
+    const image = laminate.images.find((item) => item.isPrimary) ?? laminate.images[0];
+    return {
+      slug: laminate.slug,
+      name: laminate.name,
+      code: laminate.code,
+      colorFamily: laminate.colorFamily,
+      finish: laminate.finish,
+      finishLabel: laminate.finish.charAt(0).toUpperCase() + laminate.finish.slice(1),
+      grainDirection: laminate.grainDirection,
+      collectionName: laminate.collectionName,
+      size: laminate.size,
+      description: laminate.description,
+      image: image?.url.mid ?? image?.url.full,
+      thumbnail: image?.url.thumbnail,
+    };
+  });
 }
 
 // The laminates page reads as a materials archive: a full-bleed hero, a photo
@@ -60,6 +80,7 @@ export default function LaminatesListView({
     ? filterDemoSwatches(activeFinish, activeColor).length
     : meta.total;
   const displayedMeta = isPreviewCatalog ? { ...meta, total: displayedTotal, totalPages: 1 } : meta;
+  const archiveSpecimens = toLaminateSpecimens(laminates);
   const previewImages = Array.from(
     new Set(
       previewSwatches.map((swatch) => swatch.image).filter((image): image is string => !!image),
@@ -69,10 +90,7 @@ export default function LaminatesListView({
   return (
     <main>
       <AnimatedSection immediate duration={0.4}>
-        <LaminatesHero isPreviewCatalog={isPreviewCatalog} />
-      </AnimatedSection>
-      <AnimatedSection duration={0.4} delay={0.04}>
-        <LaminatesTrustRow
+        <LaminatesHero
           total={isPreviewCatalog ? DEMO_SWATCHES.length : meta.total}
           isPreviewCatalog={isPreviewCatalog}
         />
@@ -102,7 +120,7 @@ export default function LaminatesListView({
           while the specimen index scrolls beneath them. */}
       <AnimatedSection duration={0.4}>
         <section id="board" className="bg-surface-warm scroll-mt-16 px-4 pt-8 sm:px-6">
-          <div className="bg-action relative isolate overflow-hidden text-white sm:sticky sm:top-16 sm:z-30">
+          <div className="bg-surface-warm relative isolate overflow-hidden sm:sticky sm:top-16 sm:z-30">
             <Grain />
             <div className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6">
               <FilterRail
@@ -118,7 +136,7 @@ export default function LaminatesListView({
 
       <AnimatedSection duration={0.4}>
         <SpecimenArchive
-          laminates={laminates}
+          specimens={archiveSpecimens}
           activeFinish={activeFinish}
           activeColor={activeColor}
           isPreviewCatalog={isPreviewCatalog}
@@ -171,17 +189,17 @@ function FilterRail({
 
   const chipClass = (isActive: boolean): string =>
     cn(
-      'font-body block border px-4 py-2 text-xs font-medium tracking-[0.14em] uppercase transition-colors',
+      'font-body block rounded-md  border px-6 py-3 text-xs font-medium tracking-[0.14em] uppercase transition-colors',
       isActive
-        ? 'bg-surface text-text-primary border-surface'
-        : 'border-white/25 text-white/75 hover:border-white/60 hover:text-white',
+        ? 'bg-surface text-text-primary border-brand'
+        : 'border-brand/50 text-text-primary hover:border-brand hover:bg-brand/5',
     );
 
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <MicroLabel className="text-white/60">Filter the archive</MicroLabel>
-        <MicroLabel className="text-white/60 tabular-nums">
+        <MicroLabel className="text-brand">Filter the archive</MicroLabel>
+        <MicroLabel className="text-brand tabular-nums">
           {meta.total} {meta.total === 1 ? 'finish' : 'finishes'}
           {activeFinish !== 'all' ? ` · ${activeFinish}` : ''}
           {activeColor !== 'all' ? ` · ${activeColor}` : ''}
@@ -190,7 +208,7 @@ function FilterRail({
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-        <MicroLabel className="w-16 shrink-0 text-white/45">Finish</MicroLabel>
+        <MicroLabel className="w-16 shrink-0 text-brand">Finish</MicroLabel>
         <ul className="flex flex-wrap gap-2">
           {finishFilters.map((filter) => {
             const isActive = filter.value === activeFinish;
@@ -212,7 +230,7 @@ function FilterRail({
 
       {colorFamilies.length > 1 ? (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-          <MicroLabel className="w-16 shrink-0 text-white/45">Colour</MicroLabel>
+          <MicroLabel className="w-16 shrink-0 text-brand">Colour</MicroLabel>
           <ul className="flex flex-wrap gap-2">
             {colorFilters.map((filter) => {
               const isActive = filter.value === activeColor;

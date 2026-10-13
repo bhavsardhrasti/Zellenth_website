@@ -56,7 +56,7 @@ export function SwatchGrid({ specimens, isPreviewCatalog }: SwatchGridProps): Re
                   className="group min-w-0"
                 >
                   <article>
-                    <div className="bg-neutral-tint relative aspect-square overflow-hidden">
+                    <div className="bg-neutral-ti relative aspect-square overflow-hidden">
                       <ImageWrapper
                         src={specimen.image}
                         alt={
