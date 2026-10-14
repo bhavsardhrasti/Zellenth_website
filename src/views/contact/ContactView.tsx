@@ -46,7 +46,7 @@ const contactMethods = [
 ] as const;
 
 const inputClass =
-  'bg-background border-border text-text-primary font-body placeholder:text-text-secondary/60 focus:border-brand w-full pointer-events-auto rounded-sm px-6 py-3 border px-5 py-3.5 text-sm outline-none transition-colors';
+  'bg-background border-border text-text-primary font-body placeholder:text-text-secondary/60 focus:border-brand pointer-events-auto w-full rounded-sm border px-5 py-3.5 text-sm outline-none transition-colors';
 
 const labelClass =
   'font-body text-text-primary mb-2 block text-xs font-semibold uppercase tracking-[0.18em]';
@@ -133,7 +133,7 @@ export default function ContactView(): React.JSX.Element {
             <MicroLabel className="text-white/80">Contact us</MicroLabel>
             <MaskedHeading
               lines={['Let’s make', 'your next space feel right.']}
-              className="mt-4 text-4xl text-white sm:text-5xl lg:text-6xl"
+              className="mt-4 text-3xl text-white sm:text-5xl lg:text-6xl"
             />
             <p className="font-body mt-5 max-w-md text-base text-white/85 sm:text-lg">
               Tell us about your room and we&apos;ll help you pick the right door and laminate.
@@ -144,7 +144,7 @@ export default function ContactView(): React.JSX.Element {
       <AnimatedSection className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Enquiry form – left */}
-          <div className="bg-surface border-border flex flex-col border rounded-sm p-5 sm:p-8">
+          <div className="bg-surface border-border flex min-w-0 flex-col border rounded-sm p-5 sm:p-8">
             <MicroLabel className="text-brand">Send a message</MicroLabel>
 
             <form onSubmit={handleSubmit} noValidate className="mt-8 grid gap-5">
@@ -229,7 +229,7 @@ export default function ContactView(): React.JSX.Element {
           </div>
 
           {/* Details + map – right */}
-          <div className="flex flex-col gap-5">
+          <div className="flex min-w-0 flex-col gap-5">
             <div className="border-border divide-y border-t border-b">
               {contactMethods.map(({ icon: Icon, label, value, href, external }) => (
                 <a
@@ -237,7 +237,7 @@ export default function ContactView(): React.JSX.Element {
                   href={href}
                   target={external ? '_blank' : undefined}
                   rel={external ? 'noopener noreferrer' : undefined}
-                  className="group flex items-center gap-3 py-5 transition-colors sm:gap-3 sm:py-4"
+                  className="group flex min-w-0 items-center gap-3 py-5 transition-colors sm:py-4"
                 >
                   <span className="text-brand shrink-0 transition-transform duration-200 group-hover:-translate-y-1">
                     <Icon aria-hidden className="h-4 w-4" strokeWidth={1.5} />
@@ -245,7 +245,7 @@ export default function ContactView(): React.JSX.Element {
                   <span className="font-body text-text-secondary w-22 shrink-0 text-xs uppercase tracking-[0.18em] sm:w-28">
                     {label}
                   </span>
-                  <span className="font-display text-text-primary group-hover:text-brand min-w-0 flex-1 truncate text-base transition-colors sm:text-x">
+                  <span className="font-display text-text-primary group-hover:text-brand min-w-0 flex-1 break-words text-base transition-colors sm:text-lg">
                     {value}
                   </span>
                   <ArrowRight
@@ -256,7 +256,7 @@ export default function ContactView(): React.JSX.Element {
               ))}
             </div>
 
-            <div className="bg-surface border-border flex flex-1 flex-col overflow-hidden rounded-2xl border">
+            <div className="bg-surface border-border flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border">
               <iframe
                 title="Zellenth factory location"
                 src={mapsEmbedUrl}
@@ -266,12 +266,14 @@ export default function ContactView(): React.JSX.Element {
                 allowFullScreen
               />
               <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
-                <p className="font-body text-text-secondary text-sm">{contactInfo.address}</p>
+                <p className="font-body text-text-secondary min-w-0 flex-1 break-words text-sm">
+                  {contactInfo.address}
+                </p>
                 <a
                   href={mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-body text-brand inline-flex items-center gap-2 text-sm font-medium"
+                  className="font-body text-brand inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-medium"
                 >
                   Get directions
                   <ArrowRight aria-hidden className="h-2 w-2" />
