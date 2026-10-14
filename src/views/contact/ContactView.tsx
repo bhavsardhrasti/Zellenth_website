@@ -1,15 +1,18 @@
 'use client';
 
-import { ArrowRight, Mail, MapPin, MessageCircle, Phone, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronRight, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
-import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { EnquiryModal } from '@/components/shared/EnquiryModal';
 import { Button } from '@/components/ui/Button';
 import { MaskedHeading, MicroLabel } from '@/components/ui/editorial';
 import { contactInfo } from '@/lib/data/contact';
-import { CtaBanner } from '@/views/home/sections/CtaBanner';
+
+const mapsUrl = 'https://maps.google.com/?q=' + encodeURIComponent(contactInfo.address);
+const mapsEmbedUrl =
+  'https://maps.google.com/maps?q=' + encodeURIComponent(contactInfo.address) + '&output=embed';
 
 const contactMethods = [
   {
@@ -37,140 +40,113 @@ const contactMethods = [
     icon: MapPin,
     label: 'Visit',
     value: contactInfo.address,
-    href: 'https://maps.google.com/?q=' + encodeURIComponent(contactInfo.address),
+    href: mapsUrl,
     external: true,
   },
 ] as const;
 
-const quickStats = [
-  ['24h', 'Typical response time'],
-  ['Custom', 'Door + laminate guidance'],
-  ['No login', 'Fast, direct support'],
-] as const;
+const inputClass =
+  'bg-background border-border text-text-primary font-body focus:border-brand w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors';
 
+type EnquiryForm = {
+  name: string;
+  phone: string;
+  email: string;
+  message: string;
+};
+
+const emptyForm: EnquiryForm = { name: '', phone: '', email: '', message: '' };
 export default function ContactView(): React.JSX.Element {
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+  const [form, setForm] = useState<EnquiryForm>(emptyForm);
+  const [error, setError] = useState('');
+  const [sent, setSent] = useState(false);
 
+  const updateField =
+    (field: keyof EnquiryForm) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    setError('');
+
+    if (!form.name.trim() || !form.phone.trim() || !form.message.trim()) {
+      setError('Please fill in your name, phone number and message.');
+      return;
+    }
+    if (!/^[+\d][\d\s-]{7,}$/.test(form.phone.trim())) {
+      setError('Please enter a valid phone number.');
+      return;
+    }
+
+    const text = [
+      'New enquiry from website',
+      `Name: ${form.name.trim()}`,
+      `Phone: ${form.phone.trim()}`,
+      form.email.trim() ? `Email: ${form.email.trim()}` : '',
+      `Message: ${form.message.trim()}`,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    try {
+      const url = new URL(contactInfo.whatsappHref);
+      url.searchParams.set('text', text);
+      window.open(url.toString(), '_blank', 'noopener,noreferrer');
+    } catch {
+      window.open(contactInfo.whatsappHref, '_blank', 'noopener,noreferrer');
+    }
+    setSent(true);
+    setForm(emptyForm);
+  };
   return (
     <main className="bg-background min-h-dvh">
-      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 sm:pt-8">
-        <Breadcrumbs items={[{ label: 'Contact' }]} />
-      </div>
-
       <AnimatedSection immediate>
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <MicroLabel className="text-brand">Contact us</MicroLabel>
-              <MaskedHeading
-                lines={['Let’s make', 'your next space feel right.']}
-                className="text-text-primary mt-4 text-4xl sm:text-5xl lg:text-6xl"
-              />
-              <p className="font-body text-text-secondary mt-5 max-w-x text-base sm:text-lg">
-                Share your project brief, timeline, or finish references and we&apos;ll help you
-                pick the right doors, laminates, and finishes for the room you have in mind.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button onClick={() => setIsEnquiryOpen(true)} className="px-5 py-3">
-                  Send an enquiry
-                </Button>
-                <a
-                  href={contactInfo.whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="border-border text-text-primary hover:bg-neutral-tint inline-flex items-center gap-2 border px-5 py-3 text-sm font-medium transition-colors rounded-md"
-                >
-                  WhatsApp us
-                  <ArrowRight aria-hidden className="h-4 w-4" />
-                </a>
-              </div>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {quickStats.map(([value, label]) => (
-                  <div key={label} className="bg-surface border-border rounded-xl border p-4">
-                    <div className="font-display text-brand text-3xl">{value}</div>
-                    <p className="font-body text-text-secondary mt-1 text-xs leading-relaxed">
-                      {label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-surface border-border relative overflow-hidden rounded-[28px] border p-4 shadow-card sm:p-5">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(143,85,45,0.20),_transparent_55%)]" />
-              <div className="relative">
-                <div
-                  className="relative h-[360px] overflow-hidden rounded-[24px] bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(135deg, rgba(18,18,18,0.3), rgba(18,18,18,0.55)), url('https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&q=80')",
-                  }}
-                >
-                  <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                    <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-white/80">
-                      <Sparkles aria-hidden className="h-3.5 w-3.5" />
-                      Design support
-                    </div>
-                    <h2 className="font-display mt-3 text-3xl">Built for real homes</h2>
-                  </div>
-                </div>
-
-                <div className="mt-5 grid gap-3">
-                  <div className="bg-background border-border flex items-center justify-between gap-4 rounded-2xl border px-4 py-3">
-                    <div>
-                      <p className="font-body text-text-secondary text-xs uppercase tracking-[0.16em]">
-                        Email
-                      </p>
-                      <p className="font-body text-text-primary mt-1 text-sm">
-                        {contactInfo.email}
-                      </p>
-                    </div>
-                    <a
-                      href={`mailto:${contactInfo.email}`}
-                      className="bg-brand-tint text-brand inline-flex h-10 w-10 items-center justify-center rounded-full"
-                      aria-label="Email us"
-                    >
-                      <Mail aria-hidden className="h-4 w-4" />
-                    </a>
-                  </div>
-
-                  <div className="bg-background border-border flex items-center justify-between gap-4 rounded-2xl border px-4 py-3">
-                    <div>
-                      <p className="font-body text-text-secondary text-xs uppercase tracking-[0.16em]">
-                        Factory
-                      </p>
-                      <p className="font-body text-text-primary mt-1 text-sm">
-                        {contactInfo.address}
-                      </p>
-                    </div>
-                    <a
-                      href={'https://maps.google.com/?q=' + encodeURIComponent(contactInfo.address)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-brand-tint text-brand inline-flex h-10 w-10 items-center justify-center rounded-full"
-                      aria-label="Open address on map"
-                    >
-                      <MapPin aria-hidden className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div
+          className="relative flex min-h-[460px] items-center bg-cover bg-center sm:min-h-[520px] lg:min-h-[580px]"
+          style={{
+            backgroundImage:
+              "linear-gradient(90deg, rgba(18,18,18,0.75), rgba(18,18,18,0.35)), url('https://images.unsplash.com/photo-1494526585095-c41746248156?w=1600&q=80')",
+          }}
+        >
+          <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+            <nav aria-label="Breadcrumb" className="mb-8">
+              <ol className="font-body flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-white/80">
+                <li>
+                  <Link href="/" className="transition-colors hover:text-white">
+                    Home
+                  </Link>
+                </li>
+                <li aria-hidden>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </li>
+                <li aria-current="page" className="text-white">
+                  Contact
+                </li>
+              </ol>
+            </nav>
+            <MicroLabel className="text-white/80">Contact us</MicroLabel>
+            <MaskedHeading
+              lines={['Let’s make', 'your next space feel right.']}
+              className="mt-4 text-4xl text-white sm:text-5xl lg:text-6xl"
+            />
+            <p className="font-body mt-5 max-w-md text-base text-white/85 sm:text-lg">
+              Tell us about your room and we&apos;ll help you pick the right door and laminate.
+            </p>
           </div>
         </div>
       </AnimatedSection>
-
-      <AnimatedSection className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <AnimatedSection className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {contactMethods.map(({ icon: Icon, label, value, href, external }) => (
             <a
               key={label}
               href={href}
               target={external ? '_blank' : undefined}
               rel={external ? 'noopener noreferrer' : undefined}
-              className="bg-surface border-border hover:bg-neutral-tint group flex h-full flex-col gap-4 rounded-2xl border p-5 transition-colors"
+              className="bg-surface border-border hover:bg-neutral-tint group flex h-full flex-col gap-3 rounded-2xl border px-4 py-3.5 transition-color"
             >
               <span className="bg-brand-tint text-brand flex h-11 w-11 items-center justify-center rounded-full">
                 <Icon aria-hidden className="h-5 w-5" />
@@ -186,8 +162,117 @@ export default function ContactView(): React.JSX.Element {
         </div>
       </AnimatedSection>
 
-      <CtaBanner />
+      <AnimatedSection className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Map – left */}
+          <div className="bg-surface border-border flex flex-col overflow-hidden rounded-2xl border">
+            <iframe
+              title="Zellenth factory location"
+              src={mapsEmbedUrl}
+              className="min-h-[320px] w-full flex-1 border-0 sm:min-h-[420px]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+              <p className="font-body text-text-secondary text-sm">{contactInfo.address}</p>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-body text-brand inline-flex items-center gap-2 text-sm font-medium"
+              >
+                Get directions
+                <ArrowRight aria-hidden className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
 
+          <div className="bg-surface border-border rounded-2xl border p-5 sm:p-8">
+            <MicroLabel className="text-brand">Free quote</MicroLabel>
+            <h2 className="font-display text-text-primary mt-3 text-3xl sm:text-4xl">
+              Let’s build your door.
+            </h2>
+            <p className="font-body text-text-secondary mt-3 text-sm sm:text-base">
+              Tell us what you need and our team will get back to you. No login required.
+            </p>
+
+            <form onSubmit={handleSubmit} noValidate className="mt-6 grid gap-4">
+              <div>
+                <label htmlFor="enquiry-name" className="sr-only">
+                  Your name
+                </label>
+                <input
+                  id="enquiry-name"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Your name *"
+                  value={form.name}
+                  onChange={updateField('name')}
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="enquiry-phone" className="sr-only">
+                    Phone number
+                  </label>
+                  <input
+                    id="enquiry-phone"
+                    type="tel"
+                    autoComplete="tel"
+                    placeholder="Phone number *"
+                    value={form.phone}
+                    onChange={updateField('phone')}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="enquiry-email" className="sr-only">
+                    Email (optional)
+                  </label>
+                  <input
+                    id="enquiry-email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="Email (optional)"
+                    value={form.email}
+                    onChange={updateField('email')}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="enquiry-message" className="sr-only">
+                  Your message
+                </label>
+                <textarea
+                  id="enquiry-message"
+                  rows={5}
+                  placeholder="Tell us about your door or laminate requirement *"
+                  value={form.message}
+                  onChange={updateField('message')}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              {error && (
+                <p role="alert" className="font-body text-sm text-red-600">
+                  {error}
+                </p>
+              )}
+              {sent && !error && (
+                <p role="status" className="font-body text-brand text-sm">
+                  Thanks! Your enquiry is ready to send. We will reply within 24 hours.
+                </p>
+              )}
+              <Button type="submit" className="w-full px-5 py-3 sm:w-auto sm:self-start">
+                Send enquiry
+              </Button>
+            </form>
+          </div>
+        </div>
+      </AnimatedSection>
       <EnquiryModal
         isOpen={isEnquiryOpen}
         onClose={() => setIsEnquiryOpen(false)}
