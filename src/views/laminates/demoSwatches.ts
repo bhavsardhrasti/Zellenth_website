@@ -170,18 +170,23 @@ export function withDoorImages(doorImages: { src: string; alt: string }[]): Lami
   const uniqueDoorImages = Array.from(
     new Map(doorImages.map((doorImage) => [doorImage.src, doorImage])).values(),
   );
+  const chalkWhiteImage =
+    uniqueDoorImages.find((image) => /\bwhite\b|\bchalk\b/i.test(image.alt)) ??
+    FALLBACK_DOOR_IMAGES[2]!;
   const availableImages = [...uniqueDoorImages, ...FALLBACK_DOOR_IMAGES].filter(
     (image, index, images) =>
       images.findIndex((candidate) => candidate.src === image.src) === index,
   );
 
   return DEMO_SWATCHES.map((swatch, index) => {
-    const doorImage = availableImages[index % availableImages.length]!;
+    const doorImage =
+      swatch.slug === 'preview-chalk'
+        ? chalkWhiteImage
+        : availableImages[index % availableImages.length]!;
     return {
       ...swatch,
       image: doorImage.src,
       thumbnail: doorImage.src,
-      description: doorImage.alt,
     };
   });
 }

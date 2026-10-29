@@ -6,11 +6,7 @@ import { laminateFinishOptions } from '@/lib/data/nav';
 import { cn } from '@/utils/cn';
 import { ROUTES } from '@/utils/routes';
 import { CtaBanner } from '@/views/home/sections/CtaBanner';
-import { ColorFamilyShowcase } from '@/views/laminates/ColorFamilyShowcase';
-import { DoorPreviewStrip } from '@/views/laminates/DoorPreviewStrip';
 import { FinishGuide, LaminatesHero } from '@/views/laminates/LaminatesSections';
-import { SampleNotes } from '@/views/laminates/SampleNotes';
-import { ProjectInspiration } from '@/views/laminates/ProjectInspiration';
 import { SpecimenArchive } from '@/views/laminates/SpecimenArchive';
 import { DEMO_SWATCHES, filterDemoSwatches, withDoorImages } from '@/views/laminates/demoSwatches';
 import type { LaminateSpecimen } from '@/views/laminates/SpecimenArchive';
@@ -21,10 +17,7 @@ export interface LaminatesListViewProps {
   laminates: LaminateDocument[];
   meta: PaginatedMeta;
   activeFinish: string;
-  colorFamilies: string[];
   activeColor: string;
-  /** One real swatch URL per colour family, drawn from the whole finish. */
-  colorSwatches: Record<string, string | undefined>;
   previewDoorImages: { src: string; alt: string }[];
 }
 
@@ -56,36 +49,16 @@ export default function LaminatesListView({
   laminates,
   meta,
   activeFinish,
-  colorFamilies,
   activeColor,
-  colorSwatches,
   previewDoorImages,
 }: LaminatesListViewProps): React.JSX.Element {
   const isPreviewCatalog = meta.total === 0;
   const previewSwatches: LaminateSpecimen[] = withDoorImages(previewDoorImages);
-  const archiveFamilies = isPreviewCatalog
-    ? Array.from(new Set(previewSwatches.map((swatch) => swatch.colorFamily))).sort((a, b) =>
-        a.localeCompare(b),
-      )
-    : colorFamilies;
-  const archiveSwatches = isPreviewCatalog
-    ? Object.fromEntries(
-        archiveFamilies.map((family) => [
-          family,
-          previewSwatches.find((swatch) => swatch.colorFamily === family)?.image,
-        ]),
-      )
-    : colorSwatches;
   const displayedTotal = isPreviewCatalog
     ? filterDemoSwatches(activeFinish, activeColor).length
     : meta.total;
   const displayedMeta = isPreviewCatalog ? { ...meta, total: displayedTotal, totalPages: 1 } : meta;
   const archiveSpecimens = toLaminateSpecimens(laminates);
-  const previewImages = Array.from(
-    new Set(
-      previewSwatches.map((swatch) => swatch.image).filter((image): image is string => !!image),
-    ),
-  ).slice(0, 3);
 
   return (
     <main>
@@ -100,22 +73,6 @@ export default function LaminatesListView({
         <FinishGuide activeFinish={activeFinish} />
       </AnimatedSection>
 
-      <AnimatedSection duration={0.4}>
-        <ColorFamilyShowcase
-          colorFamilies={archiveFamilies}
-          activeColor={activeColor}
-          swatches={archiveSwatches}
-        />
-      </AnimatedSection>
-
-      <AnimatedSection duration={0.4}>
-        <DoorPreviewStrip images={previewImages} />
-      </AnimatedSection>
-
-      <AnimatedSection duration={0.4}>
-        <ProjectInspiration />
-      </AnimatedSection>
-
       {/* The board — a dark, sticky filter rail so the controls stay in reach
           while the specimen index scrolls beneath them. */}
       <AnimatedSection duration={0.4}>
@@ -126,7 +83,6 @@ export default function LaminatesListView({
               <FilterRail
                 activeFinish={activeFinish}
                 activeColor={activeColor}
-                colorFamilies={archiveFamilies}
                 meta={displayedMeta}
               />
             </div>
@@ -145,9 +101,6 @@ export default function LaminatesListView({
       </AnimatedSection>
 
       <AnimatedSection duration={0.4}>
-        <SampleNotes />
-      </AnimatedSection>
-      <AnimatedSection duration={0.4}>
         <CtaBanner />
       </AnimatedSection>
     </main>
@@ -157,24 +110,14 @@ export default function LaminatesListView({
 interface FilterRailProps {
   activeFinish: string;
   activeColor: string;
-  colorFamilies: string[];
   meta: PaginatedMeta;
 }
 
 // Two stacked rails: finish (drives the whole page) and colour family (refines
 // the specimen index). Both are plain links with the current one marked.
-function FilterRail({
-  activeFinish,
-  activeColor,
-  colorFamilies,
-  meta,
-}: FilterRailProps): React.JSX.Element {
+function FilterRail({ activeFinish, activeColor, meta }: FilterRailProps): React.JSX.Element {
   const finishFilters = [{ label: 'All', value: 'all' }].concat(
     laminateFinishOptions.map((option) => ({ label: option.label, value: option.value })),
-  );
-
-  const colorFilters = [{ label: 'Any colour', value: 'all' }].concat(
-    colorFamilies.map((family) => ({ label: family, value: family })),
   );
 
   const href = (
@@ -196,7 +139,7 @@ function FilterRail({
     );
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <MicroLabel className="text-brand">Filter the archive</MicroLabel>
         <MicroLabel className="text-brand tabular-nums">
@@ -227,29 +170,6 @@ function FilterRail({
           })}
         </ul>
       </div>
-
-      {colorFamilies.length > 1 ? (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-          <MicroLabel className="w-16 shrink-0 text-brand">Colour</MicroLabel>
-          <ul className="flex flex-wrap gap-2">
-            {colorFilters.map((filter) => {
-              const isActive = filter.value === activeColor;
-              return (
-                <li key={filter.value}>
-                  <Link
-                    href={href(activeFinish, filter.value)}
-                    scroll={false}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={chipClass(isActive)}
-                  >
-                    {filter.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : null}
     </div>
   );
 }

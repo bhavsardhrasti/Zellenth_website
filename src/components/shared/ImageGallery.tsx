@@ -22,7 +22,7 @@ export function ImageGallery({
   images,
   aspectClass = 'aspect-[4/5]',
   emptyLabel = 'No image yet',
-}: ImageGalleryProps) {
+}: ImageGalleryProps): React.JSX.Element {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const activeImage = images[activeIndex];
@@ -70,7 +70,7 @@ export function ImageGallery({
               key={image.url.full}
               type="button"
               onClick={() => setActiveIndex(index)}
-              aria-label={`Show image ${index + 1}`}
+              aria-label={`Show image ${index + 1}: ${image.altText}`}
               aria-current={index === activeIndex}
               className={cn(
                 'relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border-2 transition-colors',

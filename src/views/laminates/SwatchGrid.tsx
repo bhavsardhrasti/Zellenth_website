@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
@@ -10,13 +11,17 @@ import { MicroLabel } from '@/components/ui/editorial';
 import { ROUTES } from '@/utils/routes';
 import type { LaminateSpecimen } from '@/views/laminates/SpecimenArchive';
 
+const PAGE_SIZE = 6;
+
 interface SwatchGridProps {
   specimens: LaminateSpecimen[];
   isPreviewCatalog: boolean;
 }
 
 export function SwatchGrid({ specimens, isPreviewCatalog }: SwatchGridProps): React.JSX.Element {
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const shouldReduceMotion = useReducedMotion();
+  const visibleSpecimens = specimens.slice(0, visibleCount);
   const grainLabel = (direction: string): string =>
     direction === 'no-grain' ? 'No grain' : `${direction} grain`;
 
@@ -45,7 +50,7 @@ export function SwatchGrid({ specimens, isPreviewCatalog }: SwatchGridProps): Re
             className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-10"
           >
             <AnimatePresence mode="popLayout">
-              {specimens.map((specimen, index) => (
+              {visibleSpecimens.map((specimen, index) => (
                 <motion.li
                   key={specimen.slug}
                   layout
@@ -57,17 +62,23 @@ export function SwatchGrid({ specimens, isPreviewCatalog }: SwatchGridProps): Re
                 >
                   <article>
                     <div className="bg-neutral-ti relative aspect-square overflow-hidden">
-                      <ImageWrapper
-                        src={specimen.image}
-                        alt={
-                          isPreviewCatalog
-                            ? `${specimen.name} finish concept image`
-                            : `${specimen.name} ${specimen.finishLabel.toLowerCase()} laminate`
-                        }
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                        className="transition-transform duration-700 group-hover:scale-105"
-                        emptyLabel="Swatch photography coming soon"
-                      />
+                      <Link
+                        href={`${ROUTES.LAMINATES_ID(specimen.slug)}` as Route}
+                        aria-label={`View ${specimen.name} laminate details`}
+                        className="absolute inset-0"
+                      >
+                        <ImageWrapper
+                          src={specimen.image}
+                          alt={
+                            isPreviewCatalog
+                              ? `${specimen.name} finish concept image`
+                              : `${specimen.name} ${specimen.finishLabel.toLowerCase()} laminate`
+                          }
+                          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                          className="transition-transform duration-700 group-hover:scale-105"
+                          emptyLabel="Swatch photography coming soon"
+                        />
+                      </Link>
                       <span
                         aria-hidden
                         className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20 group-focus-within:bg-black/20"
@@ -121,6 +132,25 @@ export function SwatchGrid({ specimens, isPreviewCatalog }: SwatchGridProps): Re
             >
               Clear filters
             </Link>
+          </div>
+        )}
+
+        {visibleCount < specimens.length && (
+          <div className="mt-10 flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                setVisibleCount((currentCount) =>
+                  Math.min(currentCount + PAGE_SIZE, specimens.length),
+                )
+              }
+              className="border-brand text-text-primary hover:bg-brand hover:text-surface rounded-md border px-8 py-3 text-xs font-medium tracking-[0.14em] uppercase transition-colors"
+            >
+              Explore more
+            </button>
+            <MicroLabel className="text-text-muted">
+              Showing {visibleSpecimens.length} of {specimens.length}
+            </MicroLabel>
           </div>
         )}
       </div>

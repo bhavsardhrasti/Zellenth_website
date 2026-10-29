@@ -1,9 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
-
 import { Grain, GradedImage, MaskedHeading, MicroLabel } from '@/components/ui/editorial';
-import { ROUTES } from '@/utils/routes';
-import { cn } from '@/utils/cn';
+import { FinishCarousel } from '@/views/laminates/FinishCarousel';
 
 // Verified live Unsplash photography, used as editorial backdrop only. Real
 // laminate swatches are never graded — the grade is reserved for these hero
@@ -79,148 +75,81 @@ export function LaminatesHero({
   );
 }
 
-const FINISHES = [
+export const FINISHES = [
   {
     name: 'Matte',
     value: 'matte',
     tagline: 'Soft, low sheen',
-    body: 'A quiet, non-reflective face that soaks up light instead of bouncing it. Fingerprints and smudges barely show, so it stays clean-looking in busy rooms.',
-    image: 'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=900&q=80',
-    facts: [
-      ['Sheen', 'Low'],
-      ['Best for', 'Bedrooms, studies'],
-      ['Care', 'Wipe with a dry cloth'],
-    ],
+    number: '01',
+    body: 'A calm, understated finish that absorbs light rather than reflecting it. Its soft appearance helps hide fingerprints and minor smudges, making it ideal for relaxed, everyday spaces.',
+    image: 'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=1000&q=85',
+    imageAlt: 'Warm, minimal interior representing a matte surface finish',
+
+    theme: 'matte',
   },
   {
     name: 'Gloss',
     value: 'gloss',
     tagline: 'Bright, mirror shine',
-    body: 'A smooth, reflective face that throws light back into the room and makes colours read deeper. It wipes clean in seconds and suits doors you want to feel polished.',
-    image: 'https://images.unsplash.com/photo-1615529182904-14819c35db37?w=900&q=80',
-    facts: [
-      ['Sheen', 'High'],
-      ['Best for', 'Living rooms, lobbies'],
-      ['Care', 'Buff with a soft cloth'],
-    ],
+    number: '02',
+    body: 'A smooth, light-reflecting finish that brings brightness and depth to a room. Its polished appearance works beautifully in contemporary interiors and is easy to wipe clean.',
+    image: 'https://images.unsplash.com/photo-1615529182904-14819c35db37?w=1000&q=85',
+    imageAlt: 'Elegant contemporary interior representing a glossy surface finish',
+
+    theme: 'gloss',
   },
   {
     name: 'Textured',
     value: 'textured',
     tagline: 'Tactile, wood grain',
-    body: 'A grain-embossed surface you can feel as well as see. The raised grain runs with the sheet, giving wood and stone looks real depth up close.',
-    image: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=900&q=80',
-    facts: [
-      ['Sheen', 'Low, matte'],
-      ['Best for', 'Main doors, wardrobes'],
-      ['Care', 'Dust, avoid abrasives'],
-    ],
+    number: '03',
+    body: 'A characterful surface with a visible, tactile grain. Its added depth brings wood and stone-inspired designs to life, making it a beautiful choice for statement doors and wardrobes.',
+    image: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=1000&q=85',
+    imageAlt: 'Natural material-inspired interior representing a textured surface finish',
+
+    theme: 'textured',
   },
 ];
 
+export type FinishGuideSlide = (typeof FINISHES)[number];
+
 export function FinishGuide({ activeFinish }: { activeFinish?: string }): React.JSX.Element {
   return (
-    <section className="bg-surface-warm relative isolate overflow-hidden px-4 py-14 sm:px-6 sm:py-20">
+    <section className="relative isolate overflow-hidden bg-background px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
       <Grain />
-      <div className="relative mx-auto max-w-6xl">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+
+      <div className="relative mx-auto max-w-7xl">
+        {/* Section heading */}
+        <div className="grid gap-6 border-b border-border pb-8 sm:pb-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div>
             <MicroLabel className="text-brand">Know your finish</MicroLabel>
+
             <MaskedHeading
               lines={['Three ways', 'a surface can feel.']}
-              className="mt-4 text-4xl sm:text-6xl"
+              className="mt-4 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl"
             />
           </div>
-          <p className="font-body max-w-xs text-sm leading-relaxed text-text-secondary">
-            Sheen, reflection and texture change how a colour reads in a room. Pick the surface that
-            suits the space, then narrow by tone below.
-          </p>
+
+          <div className="lg:justify-self-end lg:pb-1">
+            <p className="font-body max-w-md text-sm leading-7 text-text-secondary sm:text-base">
+              Every surface changes the way a room looks and feels. Discover the finish that matches
+              your style, your space, and your everyday needs.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {FINISHES.map((finish) => (
+                <span
+                  key={finish.value}
+                  className="rounded-full border border-border px-3 py-1.5 font-body text-xs text-text-secondary"
+                >
+                  {finish.name}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="mt-12 grid gap-10 border-t border-border pt-8 md:grid-cols-3 md:gap-8">
-          {FINISHES.map((finish, i) => {
-            const isActive = finish.value === activeFinish;
-            return (
-              <Link
-                key={finish.name}
-                href={{
-                  pathname: ROUTES.LAMINATES,
-                  query: { finish: finish.value },
-                  hash: 'board',
-                }}
-                scroll={false}
-                aria-current={isActive ? 'page' : undefined}
-                className="group flex flex-col"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={finish.image}
-                    alt={`${finish.name} laminate surface`}
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-                  />
-                  <span
-                    aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"
-                  />
-                  <MicroLabel className="absolute top-4 left-4 tabular-nums text-white/85">
-                    {String(i + 1).padStart(2, '0')}
-                  </MicroLabel>
-                  <MicroLabel
-                    className={cn(
-                      'absolute top-4 right-4 px-2.5 py-1.5 backdrop-blur-sm transition-colors',
-                      isActive ? 'bg-accent-2 text-white' : 'bg-white/15 text-white/90',
-                    )}
-                  >
-                    {isActive ? 'Viewing' : finish.tagline}
-                  </MicroLabel>
-                  <div className="absolute right-4 bottom-4 left-4">
-                    <h3 className="font-display flex items-center gap-2 text-3xl">
-                      {finish.name}
-                      <span
-                        aria-hidden
-                        className={cn(
-                          'transition-all duration-300',
-                          isActive
-                            ? 'opacity-100'
-                            : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100',
-                        )}
-                      >
-                        →
-                      </span>
-                    </h3>
-                    <MicroLabel className="mt-1.5 block text-white/65">
-                      {isActive
-                        ? 'Showing this finish'
-                        : `See ${finish.name.toLowerCase()} finishes`}
-                    </MicroLabel>
-                  </div>
-                </div>
-
-                <p className="font-body mt-5 flex-1 text-sm leading-relaxed text-text-secondary">
-                  {finish.body}
-                </p>
-
-                {/* A small spec block so the difference between the three
-                    types is readable as facts, not just adjectives. */}
-                <dl className="mt-5 border-t border-border">
-                  {finish.facts.map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="flex items-baseline justify-between gap-4 border-b border-border py-2.5"
-                    >
-                      <dt>
-                        <MicroLabel className="text-brand">{label}</MicroLabel>
-                      </dt>
-                      <dd className="font-body text-sm text-text-secondary">{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </Link>
-            );
-          })}
-        </div>
+        <FinishCarousel finishes={FINISHES} activeFinish={activeFinish ?? 'all'} />
       </div>
     </section>
   );

@@ -37,5 +37,11 @@ export function SpecimenArchive({
     ? filterDemoSwatches(activeFinish, activeColor, previewSwatches)
     : laminateSpecimens;
 
-  return <SwatchGrid specimens={specimens} isPreviewCatalog={isPreviewCatalog} />;
+  return (
+    <SwatchGrid
+      key={`${activeFinish}-${activeColor}-${specimens[0]?.slug ?? 'empty'}`}
+      specimens={specimens}
+      isPreviewCatalog={isPreviewCatalog}
+    />
+  );
 }
