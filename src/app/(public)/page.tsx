@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import HomeView from '@/views/home/HomeView';
 import { listDoors, getFeaturedDoorsByCategory } from '@/lib/services/door.service';
 import { listDoorCategories } from '@/lib/services/door-category.service';
