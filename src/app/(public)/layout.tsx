@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Suspense, type ReactNode } from 'react';
 
 import { SiteFooter } from '@/components/layout/SiteFooter';
