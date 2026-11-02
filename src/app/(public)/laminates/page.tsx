@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import type { Metadata } from 'next';
 
 import LaminatesListView from '@/views/laminates/LaminatesListView';
